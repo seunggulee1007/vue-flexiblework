@@ -90,6 +90,11 @@ const routes = [
         component: () => import('@/layout/page/Index.vue'),
         children: [],
     },
+    {
+        path: '*',
+        name: '404',
+        component: () => import('@/views/NotFound.vue'),
+    },
 ];
 
 const router = new VueRouter({

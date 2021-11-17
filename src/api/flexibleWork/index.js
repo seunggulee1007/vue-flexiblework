@@ -1,7 +1,10 @@
-import { doAxiosGet } from '..';
+import { doAxiosGet, doAxiosPost } from '..';
 
 function getCodeList() {
     return doAxiosGet('/flexible-work/codes');
 }
 
-export { getCodeList };
+function saveFlexibleWork(param) {
+    return doAxiosPost('/flexible-work', param);
+}
+export { getCodeList, saveFlexibleWork };

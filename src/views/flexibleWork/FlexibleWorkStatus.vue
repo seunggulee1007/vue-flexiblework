@@ -29,7 +29,7 @@
                     </v-card>
                 </v-dialog>
             </v-card-actions>
-            <v-card class="ma-4">
+            <v-card class="ma-4; pa-5">
                 <v-data-table :items="itemList" :headers="headers" hide-default-footer class="elevation-1">
                     <template v-slot:item.rest="{ item }">
                         <v-tooltip v-model="item.show" top>
