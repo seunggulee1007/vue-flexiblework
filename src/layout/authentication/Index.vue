@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app style="background: #f0f0f2; height: 100%">
         <authentication-view />
     </v-app>
 </template>

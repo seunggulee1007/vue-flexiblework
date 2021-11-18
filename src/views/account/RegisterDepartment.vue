@@ -85,17 +85,13 @@
                                 <v-expansion-panel-header>하위 부서 목록</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-card-actions class="justify-end">
-                                        <v-dialog v-model="dialog" max-width="500px" persistent>
+                                        <v-dialog v-model="dialog" max-width="700px" persistent>
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn color="primary" dark class="mb-2" small v-bind="attrs" v-on="on">
                                                     신규부서 등록
                                                 </v-btn>
                                             </template>
                                             <v-card v-if="dialog">
-                                                <v-card-title>
-                                                    <span class="text-h5">{{ `[${selected.departmentName}]` }}</span
-                                                    ><span class="ml-2">하위 부서 등록</span>
-                                                </v-card-title>
                                                 <register-department-form
                                                     :department="department"
                                                     :selected="selected"

@@ -1,6 +1,6 @@
 <template>
     <v-main>
-        <v-container fluid class="fill-height">
+        <v-container fluid class="fill-height main_container mt-5 rounded-xl" elevation="2">
             <router-view />
         </v-container>
         <v-overlay :value="isProcess">
@@ -22,4 +22,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.main_container {
+    min-height: 756px;
+    background: white;
+}
+.main_container > div.container {
+    height: 100%;
+}
+</style>

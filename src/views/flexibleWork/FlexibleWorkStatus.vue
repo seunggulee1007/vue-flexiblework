@@ -1,9 +1,13 @@
 <template>
     <v-container>
+        <v-toolbar color="secondary" dark flat>
+            <v-icon>mdi-briefcase</v-icon>
+            <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
+        </v-toolbar>
         <v-card>
             <v-card-title>유연근무 현황</v-card-title>
             <v-card-actions>
-                <v-dialog v-model="dialog" max-width="500px">
+                <v-dialog v-model="dialog" max-width="700px" persistent>
                     <template v-slot:activator="{ on, attrs }">
                         <div>
                             <v-select
@@ -25,7 +29,7 @@
                         </div>
                     </template>
                     <v-card v-if="dialog">
-                        <register-flexible-work-form></register-flexible-work-form>
+                        <register-flexible-work-form @close="closeModal"></register-flexible-work-form>
                     </v-card>
                 </v-dialog>
             </v-card-actions>
@@ -166,6 +170,11 @@ export default {
                 },
             ],
         };
+    },
+    methods: {
+        closeModal() {
+            this.dialog = false;
+        },
     },
 };
 </script>
