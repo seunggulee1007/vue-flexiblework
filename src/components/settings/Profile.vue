@@ -1,13 +1,11 @@
 <template>
     <v-container>
-        <v-card-title>프로필 변경</v-card-title>
         <v-card>
             <v-container>
-                <v-row class="d-flex justify-space-around">
-                    <v-col cols="1" md="1"></v-col>
-                    <v-col cols="12" md="6">
+                <v-row>
+                    <v-col cols="12">
                         <v-container>
-                            <v-card width="400" align="center">
+                            <v-card align="center" :class="cardSize">
                                 <v-card v-if="imgSrc != ''">
                                     <vue-cropper
                                         ref="cropper"
@@ -17,7 +15,6 @@
                                         :min-container-width="250"
                                         :min-container-height="180"
                                         :background="true"
-                                        :img-style="{ width: '300px', height: '400px' }"
                                         :src="imgSrc"
                                         :aspectRatio="1 / 1"
                                     ></vue-cropper>
@@ -35,7 +32,7 @@
                                 </v-card>
                                 <!-- 기본 프로필 사진 -->
                                 <v-card v-else>
-                                    <v-card-text v-html="identicon" class="text-center">
+                                    <v-card-text v-html="identicon">
                                         <v-img v-html="identicon"></v-img>
                                     </v-card-text>
                                 </v-card>
@@ -51,9 +48,21 @@
                                     ></v-file-input>
                                 </v-card>
                                 <v-card class="mt-5" v-if="imgSrc != ''" width="600">
-                                    <v-btn block @click="cropImage" color="error" class="mb-2"> 자르기 </v-btn>
-                                    <v-btn block @click="confirmImage" color="primary" class="mb-2">확인</v-btn>
-                                    <v-btn block @click="cancelImage" color="warning" class="mb-2">취소</v-btn>
+                                    <v-dialog v-model="dialog" max-width="700px" persistent>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn color="error" v-bind="attrs" block v-on="on" @click="cropImage">
+                                                자르기<v-icon right dark> mdi-content-cut </v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <v-card v-if="dialog">
+                                            <profile-form
+                                                :cropImg="cropImg"
+                                                @confirm="confirmImage"
+                                                @close="closeModal"
+                                            >
+                                            </profile-form>
+                                        </v-card>
+                                    </v-dialog>
                                 </v-card>
                                 <v-card class="mt-5" v-if="ACCOUNT.profileImage && changeProfileImage != ''">
                                     <v-btn block @click="cropImage" color="error" class="mb-2"> 삭제 </v-btn>
@@ -61,25 +70,6 @@
                             </v-card>
                         </v-container>
                     </v-col>
-                    <v-col cols="12" md="4">
-                        <v-container>
-                            <v-card width="400" height="400" align="center">
-                                <v-card-title class="justify-center text-h5">미리보기</v-card-title>
-                                <v-text-field ref="previewImage" hidden></v-text-field>
-                                <v-card-text>
-                                    <v-img
-                                        v-html="identicon"
-                                        v-if="!cropImg"
-                                        class="justify-center text-center"
-                                    ></v-img>
-                                    <v-avatar :size="imageSize">
-                                        <v-img :src="cropImg"></v-img>
-                                    </v-avatar>
-                                </v-card-text>
-                            </v-card>
-                        </v-container>
-                    </v-col>
-                    <v-col></v-col>
                 </v-row>
             </v-container>
             <v-card-actions class="justify-center mt-10 px-20">
@@ -108,9 +98,11 @@ import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 import { toSvg } from 'jdenticon';
+import ProfileForm from '@/components/settings/ProfileForm.vue';
 export default {
     data() {
         return {
+            dialog: false,
             successFlag: false,
             resultMsg: '',
             imgSrc: '',
@@ -121,7 +113,7 @@ export default {
     },
     computed: {
         identicon() {
-            return toSvg(this.ACCOUNT.userName, 255);
+            return toSvg(this.ACCOUNT.userName, 200);
         },
         imageSize() {
             switch (this.$vuetify.breakpoint.name) {
@@ -131,9 +123,17 @@ export default {
                     return 250;
             }
         },
+        cardSize() {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs':
+                    return '';
+                default:
+                    return 'mx-15';
+            }
+        },
     },
     props: ['ACCOUNT'],
-    components: { VueCropper, ConfirmDialog },
+    components: { VueCropper, ConfirmDialog, ProfileForm },
     methods: {
         ...mapActions(['CHANGE_PROFILE_IMAGE']),
         setImage(file) {
@@ -161,13 +161,15 @@ export default {
         cropImage() {
             // get image data for post processing, e.g. upload or setting image src
             this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
-            this.$refs.previewImage.focus();
         },
         confirmImage() {
             this.changeProfileImage = this.cropImg;
             this.imgSrc = '';
+            this.closeModal();
         },
-        cancelImage() {},
+        closeModal() {
+            this.dialog = false;
+        },
         async modifyProfile() {
             this.successFlag = this.changeProfileImage;
             if (!this.changeProfileImage) {
