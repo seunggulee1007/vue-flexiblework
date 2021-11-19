@@ -118,7 +118,31 @@
                             </v-expansion-panel>
                             <v-expansion-panel class="mb-10">
                                 <v-expansion-panel-header>소속 사원</v-expansion-panel-header>
-                                <v-expansion-panel-content> </v-expansion-panel-content>
+                                <v-expansion-panel-content>
+                                    <v-card-actions class="justify-end">
+                                        <v-dialog v-model="empDialog" max-width="800px">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn color="primary" dark class="mb-2" small v-bind="attrs" v-on="on">
+                                                    사원 등록
+                                                </v-btn>
+                                            </template>
+                                            <v-card v-if="empDialog">
+                                                <search-employee-form
+                                                    :selected="selected"
+                                                    @close="closeEmpDialog"
+                                                    @success="success"
+                                                ></search-employee-form>
+                                            </v-card>
+                                        </v-dialog>
+                                    </v-card-actions>
+                                    <v-data-table
+                                        :headers="empHeaders"
+                                        :items="selected.employeeDtoList"
+                                        hide-default-footer
+                                        class="elevation-1"
+                                    >
+                                    </v-data-table>
+                                </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
                     </v-container>
@@ -131,12 +155,14 @@
 <script>
 import { getDepartmentList } from '@/api/account';
 import RegisterDepartmentForm from '@/components/account/RegisterDepartmentForm.vue';
+import SearchEmployeeForm from '@/components/account/SearchEmployeeForm.vue';
 export default {
     created() {
         this.getDepartmentList();
     },
     components: {
         RegisterDepartmentForm,
+        SearchEmployeeForm,
     },
     data: () => ({
         items: [],
@@ -161,6 +187,7 @@ export default {
             active: false,
         },
         dialog: false,
+        empDialog: false,
         successFlag: false,
         resultMsg: '',
         active: [],
@@ -188,6 +215,26 @@ export default {
                 align: 'center',
                 value: 'actions',
                 sortable: false,
+            },
+        ],
+        empHeaders: [
+            {
+                text: '사원번호',
+                align: 'center',
+                sortable: false,
+                value: 'employeeId',
+            },
+            {
+                text: '사원명',
+                align: 'center',
+                sortable: false,
+                value: 'userName',
+            },
+            {
+                text: '이메일',
+                align: 'center',
+                sortable: false,
+                value: 'email',
             },
         ],
         selected: {},
@@ -231,6 +278,10 @@ export default {
             this.$nextTick(() => {
                 this.department = Object.assign({}, this.defaultDepartment);
             });
+        },
+        // 사원 등록 창 닫기
+        closeEmpDialog() {
+            this.empDialog = false;
         },
         success() {
             this.getDepartmentList();
