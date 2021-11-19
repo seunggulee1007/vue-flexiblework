@@ -1,36 +1,50 @@
 <template>
     <v-container>
-        <v-row>
-            <v-col cols="12">
-                <v-text-field
-                    prepend-icon="mdi-domain"
-                    v-model="companyName"
-                    placeholder="표시할 지점명을 입력해 주세요."
-                    label="지점명"
-                />
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="11">
-                <v-text-field
-                    prepend-icon="mdi-map-marker"
-                    placeholder="검색할 주소지를 입력해 주세요."
-                    label="근무지 주소"
-                    v-model="searchKeyword"
-                />
-            </v-col>
-            <v-col cols="1">
-                <v-btn color="primary" @click="searchAddress">검색</v-btn>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-text-field prepend-icon="mdi-social-distance-2-meters" label="허용 범위(미터)" v-model="distance" />
-        </v-row>
-        <v-row>
-            <v-card style="width: 100%; height: 300px">
-                <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
-            </v-card>
-        </v-row>
+        <v-toolbar color="secondary" dark flat>
+            <v-icon>mdi-map-legend</v-icon>
+            <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
+        </v-toolbar>
+        <v-card class="pa-5">
+            <v-row>
+                <v-col cols="12">
+                    <v-text-field
+                        prepend-icon="mdi-domain"
+                        v-model="companyName"
+                        placeholder="표시할 지점명을 입력해 주세요."
+                        label="지점명"
+                    />
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="11">
+                    <v-text-field
+                        prepend-icon="mdi-map-marker"
+                        placeholder="검색할 주소지를 입력해 주세요."
+                        label="근무지 주소"
+                        v-model="searchKeyword"
+                    />
+                </v-col>
+                <v-col cols="1">
+                    <v-btn color="primary" @click="searchAddress">검색</v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-text-field
+                        prepend-icon="mdi-social-distance-2-meters"
+                        label="허용 범위(미터)"
+                        v-model="distance"
+                    />
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card style="width: 100%; height: 300px">
+                        <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-card>
     </v-container>
 </template>
 

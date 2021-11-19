@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" md="5">
-                <v-card>
+                <v-card class="dashboard--card" elevation="5">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>출퇴근 등록</v-card-title>
                     <v-col class="mx-4">
                         <v-row>
@@ -26,19 +26,19 @@
                 </v-card>
             </v-col>
             <v-col cols="12" md="7">
-                <v-card>
+                <v-card class="dashboard--card" elevation="5">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>근무현황</v-card-title>
                 </v-card>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" md="5">
-                <v-card>
+                <v-card class="dashboard--card" elevation="5">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>바로가기</v-card-title>
                 </v-card>
             </v-col>
             <v-col cols="12" md="7">
-                <v-card>
+                <v-card class="dashboard--card" elevation="5">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>공지사항</v-card-title>
                 </v-card>
             </v-col>
@@ -60,8 +60,7 @@ export default {
 </script>
 
 <style scoped>
-.v-sheet--offset {
-    top: -24px;
-    position: relative;
+.dashboard--card {
+    min-height: 300px;
 }
 </style>

@@ -77,6 +77,9 @@ function setInterceptors(instance) {
                                 isTokenRefreshing = false;
                                 instance.defaults.headers['X-SEPARTNERS-AUTH'] = `Bearer ${newAccessToken}`;
                                 onTokenRefreshed(newAccessToken);
+                            })
+                            .catch(() => {
+                                isTokenRefreshing = true;
                             });
                     }
                     return retryOriginalRequest;
