@@ -1,6 +1,10 @@
 <template>
     <v-container>
         <v-card>
+            <v-alert type="success" v-if="successFlag && resultMsg" dense outlined dismissible>{{ resultMsg }}</v-alert>
+            <v-alert type="error" v-else-if="!successFlag && resultMsg" dense outlined dismissible>{{
+                resultMsg
+            }}</v-alert>
             <v-container>
                 <v-row>
                     <v-col cols="12">
@@ -84,10 +88,6 @@
                     :depressed="true"
                 ></confirm-dialog>
             </v-card-actions>
-            <v-alert type="success" v-if="successFlag && resultMsg" dense outlined dismissible>{{ resultMsg }}</v-alert>
-            <v-alert type="error" v-else-if="!successFlag && resultMsg" dense outlined dismissible>{{
-                resultMsg
-            }}</v-alert>
         </v-card>
     </v-container>
 </template>
