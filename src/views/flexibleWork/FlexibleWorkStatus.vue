@@ -8,30 +8,29 @@
             <v-row>
                 <v-col cols="12" md="2" sm="6">
                     <v-select
-                        :items="[
-                            { code: 1, name: '유연근무유형' },
-                            { code: 2, name: '유연근무명칭' },
-                        ]"
-                        item-text="name"
+                        :items="flexibleWorkTypeList"
+                        item-text="title"
                         item-value="code"
-                        label="검색유형 선택"
+                        label="유연근무 유형 선택"
                         outlined
                         dense
                         class="mt-3"
+                        v-model="searchForm.flexibleWorkType"
                     >
                     </v-select>
                 </v-col>
                 <v-col cols="12" sm="8">
                     <v-text-field
                         width="150"
-                        label="검색어"
+                        label="유연근무 명칭"
                         append-icon="mdi-magnify"
                         placeholder="입력하세요."
                         required
                         style="width: 60%; display: inline-block"
                         class="mr-3"
+                        v-model="searchForm.flexibleWorkName"
                     />
-                    <v-btn color="primary">조회</v-btn>
+                    <v-btn color="primary" @click="getFlexibleWorkList">조회</v-btn>
                 </v-col>
                 <v-col cols="12" lg="2" class="text-right">
                     <v-dialog v-model="dialog" max-width="700px" persistent>
@@ -49,16 +48,21 @@
             <v-divider class="my-10" />
             <v-row>
                 <v-col cols="12">
-                    <v-data-table :items="itemList" :headers="headers" hide-default-footer class="elevation-1">
-                        <template v-slot:item.rest="{ item }">
-                            <v-tooltip v-model="item.show" top>
+                    <v-data-table
+                        :items="flexibleWorkList"
+                        :headers="headers"
+                        hide-default-footer
+                        class="elevation-1"
+                        v-columns-resizable
+                    >
+                        <template v-slot:item.restExist="{ item }">
+                            <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
-                                    {{ item.rest }}
-                                    <v-btn icon v-bind="attrs" v-on="on">
+                                    {{ item.restExist ? '있음' : '없음' }}
+                                    <v-btn icon v-bind="attrs" v-on="on" v-if="item.restExist">
                                         <v-icon color="grey lighten-1"> mdi-information-outline </v-icon>
                                     </v-btn>
                                 </template>
-
                                 <span>
                                     <div>
                                         <table>
@@ -66,15 +70,40 @@
                                                 <th>No.</th>
                                                 <th>시간</th>
                                             </tr>
-                                            <tr v-for="(rest, idx) in item.rests" :key="rest.id">
-                                                <td>{{ idx }}</td>
-                                                <td>{{ `${rest.startRest} ~ ${rest.endRest}` }}</td>
+                                            <tr v-for="(rest, idx) in item.restTimeList" :key="rest.id">
+                                                <td>{{ idx + 1 }}</td>
+                                                <td>{{ `${rest.startTime} ~ ${rest.endTime}` }}</td>
                                             </tr>
                                         </table>
                                     </div>
                                 </span>
                             </v-tooltip>
                         </template>
+                        <template v-slot:item.mandatoryTimeExist="{ item }">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    {{ item.mandatoryTimeExist ? '있음' : '없음' }}
+                                    <v-btn icon v-bind="attrs" v-on="on" v-if="item.mandatoryTimeExist">
+                                        <v-icon color="grey lighten-1"> mdi-information-outline </v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>
+                                    <div>
+                                        <table>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>시간</th>
+                                            </tr>
+                                            <tr v-for="(time, idx) in item.mandatoryTimeList" :key="time.id">
+                                                <td>{{ idx + 1 }}</td>
+                                                <td>{{ `${time.startTime} ~ ${time.endTime}` }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </span>
+                            </v-tooltip>
+                        </template>
+                        <template v-slot:item.workTime="{ item }"> {{ item.startTime }} ~ {{ item.endTime }} </template>
                     </v-data-table>
                 </v-col>
             </v-row>
@@ -83,18 +112,24 @@
 </template>
 
 <script>
+import { getCodeList, getFlexibleWorkList } from '@/api/flexibleWork';
 import RegisterFlexibleWorkForm from '@/components/flexibleWork/RegisterFlexibleWorkForm.vue';
 export default {
+    async mounted() {
+        await this.getCodeList();
+        await this.getFlexibleWorkList();
+    },
     components: {
         RegisterFlexibleWorkForm,
     },
     data() {
         return {
+            loading: false,
             dialog: false,
             headers: [
                 {
                     text: '유연근무유형',
-                    value: 'type',
+                    value: 'flexibleWorkType',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -102,7 +137,7 @@ export default {
                 },
                 {
                     text: '유연근무명칭',
-                    value: 'name',
+                    value: 'flexibleWorkName',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -110,7 +145,7 @@ export default {
                 },
                 {
                     text: '1일 근로 시간',
-                    value: 'hour',
+                    value: 'dailyWorkTime',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -118,7 +153,7 @@ export default {
                 },
                 {
                     text: '근무요일',
-                    value: 'day',
+                    value: 'workDayOfWeek',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -126,7 +161,7 @@ export default {
                 },
                 {
                     text: '정산단위기간',
-                    value: 'period',
+                    value: 'settlementUnitPeriod',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -134,7 +169,7 @@ export default {
                 },
                 {
                     text: '휴게시간우뮤',
-                    value: 'rest',
+                    value: 'restExist',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -142,7 +177,7 @@ export default {
                 },
                 {
                     text: '의무시간유무',
-                    value: 'need',
+                    value: 'mandatoryTimeExist',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -150,7 +185,7 @@ export default {
                 },
                 {
                     text: '근무시간',
-                    value: 'workTiem',
+                    value: 'workTime',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -166,7 +201,7 @@ export default {
                 },
                 {
                     text: '시작일',
-                    value: 'startDate',
+                    value: 'applyDateFrom',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -174,7 +209,7 @@ export default {
                 },
                 {
                     text: '종료일',
-                    value: 'endDate',
+                    value: 'applyDateTo',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -182,38 +217,48 @@ export default {
                 },
                 {
                     text: '사용유무',
-                    value: 'use',
+                    value: 'active',
                     align: 'center',
                     sortable: false,
                     divider: true,
                     class: 'grey darken-1 white--text',
                 },
             ],
-            itemList: [
-                {
-                    type: '시차출퇴근제',
-                    name: '생산관리팀 7시 출근',
-                    hour: '8시간',
-                    day: '근무 요일',
-                    period: '1주',
-                    rest: '있음',
-                    need: '없음',
-                    workTiem: '07:00~16:00',
-                    workPersonCnt: '3명',
-                    startDate: '2021-01-01',
-                    endDate: '9999-12-31',
-                    use: '사용',
-                    rests: [
-                        { id: 0, startRest: '10:00', endRest: '11:00' },
-                        { id: 1, startRest: '15:00', endRest: '16:00' },
-                    ],
-                },
-            ],
+            flexibleWorkTypeList: [],
+            defaultList: [{ code: '', title: '전체' }],
+            searchForm: {
+                flexibleWorkType: '',
+                flexibleWorkName: '',
+            },
+            pageable: {
+                number: 0,
+                size: 10,
+            },
+            flexibleWorkList: [],
         };
     },
     methods: {
+        async getCodeList() {
+            let res = await getCodeList();
+            if (res.success) {
+                this.flexibleWorkTypeList = this.defaultList.concat(res.response.flexibleWorkTypeList);
+            }
+        },
         closeModal() {
             this.dialog = false;
+        },
+        async getFlexibleWorkList() {
+            this.loading = true;
+            const param = {
+                ...this.pageable,
+                ...this.searchForm,
+            };
+            let res = await getFlexibleWorkList(param);
+            console.log(res);
+            if (res.success) {
+                this.flexibleWorkList = res.response.content;
+            }
+            this.loading = false;
         },
     },
 };

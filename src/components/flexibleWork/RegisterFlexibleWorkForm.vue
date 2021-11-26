@@ -8,8 +8,8 @@
             </v-btn>
         </v-toolbar>
         <v-container>
-            <v-card class="pa-10">
-                <v-form ref="flexibleForm" v-model="valid" lazy-validation>
+            <v-card :loading="loading">
+                <v-form ref="flexibleForm" v-model="valid" lazy-validation class="pa-10">
                     <v-row justify="space-between">
                         <v-col>
                             <v-select
@@ -33,15 +33,16 @@
                     </v-row>
                     <v-divider />
                     <v-row>
-                        <v-col v-for="item in workDayOfWeekList" :key="item.code" cols="12" md="1" sm="4" class="mx-3">
+                        <v-col v-for="item in workDayOfWeekList" :key="item.code" cols="12" md="1" sm="3" class="mx-3">
                             <v-checkbox
-                                :label="getFirstChar(item.title)"
+                                :label="item.title"
                                 :value="item.code"
                                 v-model="flexibleWork.workDayOfWeekSet"
+                                style="margin-bottom: -40px"
                             ></v-checkbox>
                         </v-col>
                     </v-row>
-                    <v-divider class="pb-3" />
+                    <v-divider class="pb-3 mt-10" />
                     <v-row justify="space-between">
                         <v-col cols="12">
                             <v-select
@@ -195,6 +196,7 @@
                                                     ></v-time-picker>
                                                 </v-menu>
                                             </template>
+                                            <v-divider></v-divider>
                                             <template v-slot:item.endTime="{ item }">
                                                 <v-menu
                                                     :ref="`restEnd${item.id}`"
@@ -352,6 +354,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             flexibleWork: {
                 flexibleWorkType: '', // 유연근무 제도
                 flexibleWorkName: '', //유연근무명칭
@@ -387,6 +390,7 @@ export default {
                     align: 'center',
                     sortable: false,
                     class: 'grey darken-1 white--text',
+                    width: '150',
                     divider: true,
                     value: 'startTime',
                 },
@@ -394,6 +398,7 @@ export default {
                     text: '종료시간',
                     align: 'center',
                     sortable: false,
+                    width: '150',
                     class: 'grey darken-1 white--text',
                     value: 'endTime',
                 },
@@ -436,18 +441,20 @@ export default {
                 }
             });
         },
-        getFirstChar(title) {
-            return title.substring(0, 1);
-        },
-        saveFlexibleWork() {
+        async saveFlexibleWork() {
             if (this.$refs.flexibleForm.validate()) {
+                this.loading = true;
                 if (this.flexibleWork.restExist) {
                     this.flexibleWork.restTimeList = this.restTimeList;
                 }
                 if (this.flexibleWork.mandatoryTimeExist) {
                     this.flexibleWork.mandatoryTimeList = this.mandatoryTimeList;
                 }
-                saveFlexibleWork(this.flexibleWork);
+                let res = await saveFlexibleWork(this.flexibleWork);
+                if (res.success) {
+                    this.close();
+                }
+                this.loading = false;
             }
         },
         addRestTimeList() {
