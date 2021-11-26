@@ -42,17 +42,23 @@ function doAxios(url, method, params, config) {
 
 function errFunction(error) {
     store.commit('processStop');
-    const data = {};
+    let res = {};
     if (error.response) {
         const {
             response: { data },
         } = error;
-        return data;
+        res = data;
     } else if (!error.status) {
-        data.success = false;
-        data.message = '네트워크 연결을 확인해 주세요.';
+        res.success = false;
+        res.message = '네트워크 연결을 확인해 주세요.';
     }
-    return data;
+    if (res.message && res.status != 401) {
+        store.commit('setSanckbarMessage', res.message);
+        store.commit('setSnackbarTimeout', 50000);
+        store.commit('setSnackbarColor', 'orange lighten-1');
+        store.commit('endSnackbar');
+    }
+    return res;
 }
 
 export { createInstance, doAxios, doAxiosDelete, doAxiosGet, doAxiosPost, doAxiosPut };

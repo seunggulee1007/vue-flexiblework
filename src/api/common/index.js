@@ -17,6 +17,7 @@ function setInterceptors(instance) {
     // Add a request interceptor
     instance.interceptors.request.use(
         function (config) {
+            store.commit('startSnackbar');
             // Do something before request is sent
             // test comment
             config.headers['X-SEPARTNERS-AUTH'] = `Bearer ${store.getters.getAccessToken}`;
@@ -33,6 +34,12 @@ function setInterceptors(instance) {
             // Any status code that lie within the range of 2xx cause this function to trigger
             // Do something with response data
             store.commit('processStop');
+            if (response.config.method !== 'get') {
+                store.commit('setSanckbarMessage', response.data.message);
+                store.commit('setSnackbarColor', 'light-blue accent-2');
+                store.commit('setSnackbarTimeout', 5000);
+                store.commit('endSnackbar');
+            }
             return response.data;
         },
         async function (error) {
@@ -46,14 +53,17 @@ function setInterceptors(instance) {
                     response: { status },
                     response: { data },
                 } = error;
+                console.log('401떴으면 여기 와야 하는 거 아니냐? ㅋㅋ');
                 if (status === 401) {
                     const originalRequest = config;
+                    console.log('이것도 좀 확인하고', data.status);
                     if (data && data.status == -401) {
                         store.commit('clearLoginInfo');
                         store._vm.$cookie.delete(process.env.VUE_APP_AUTH_TOKEN);
                         store._vm.$cookie.delete(process.env.VUE_APP_USER_ID);
                         store._vm.$cookie.delete(process.env.VUE_APP_AUTH_REFRESH_TOKEN);
                         router.push('/authentication/sign-in');
+                        return Promise.reject(error);
                     }
                     // token이 재발급 되는 동안의 요청은 refreshSubscribers에 저장
                     const retryOriginalRequest = new Promise(resolve => {
@@ -62,7 +72,9 @@ function setInterceptors(instance) {
                             resolve(instance(originalRequest));
                         });
                     });
+                    console.log('토큰 재발급 되는 동안 저장을 할 거고....');
                     if (!isTokenRefreshing) {
+                        console.log('토큰 재발행 하나?');
                         isTokenRefreshing = true;
                         const refreshToken = store.getters.getRefreshToken;
 
@@ -79,7 +91,7 @@ function setInterceptors(instance) {
                                 onTokenRefreshed(newAccessToken);
                             })
                             .catch(() => {
-                                isTokenRefreshing = true;
+                                isTokenRefreshing = false;
                             });
                     }
                     return retryOriginalRequest;

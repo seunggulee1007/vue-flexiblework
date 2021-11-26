@@ -19,16 +19,6 @@
             <v-col md="1"></v-col>
         </v-row>
         <v-row> </v-row>
-        <v-overlay :value="overlay">
-            <v-row class="justify-center mb-5">
-                <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-            </v-row>
-            <v-row>
-                <v-card>
-                    <v-card-text> 조회중입니다. 조회가 오래 걸릴경우 새로고침(F5)를 눌러주세요. </v-card-text>
-                </v-card>
-            </v-row>
-        </v-overlay>
     </v-app>
 </template>
 
@@ -58,7 +48,6 @@ export default {
     },
     data() {
         return {
-            overlay: false,
             naviFlag: true,
             icons: ['mdi-home', 'mdi-email', 'mdi-calendar', 'mdi-delete'],
             items: ['default', 'absolute', 'fixed'],

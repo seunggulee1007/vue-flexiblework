@@ -17,4 +17,19 @@ export default {
     setProcessMsg(state, message) {
         state.processMsg = message;
     },
+    setSanckbarMessage(state, message) {
+        state.snackbarMessage = message;
+    },
+    setSnackbarTimeout(state, timeout) {
+        state.snackbarTimeout = timeout;
+    },
+    startSnackbar(state) {
+        state.snackbar = false;
+    },
+    endSnackbar(state) {
+        state.snackbar = true;
+    },
+    setSnackbarColor(state, color) {
+        state.snackbarColor = color;
+    },
 };
