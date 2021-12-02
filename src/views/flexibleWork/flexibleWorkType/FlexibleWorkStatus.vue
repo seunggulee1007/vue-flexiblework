@@ -4,7 +4,7 @@
             <v-icon>mdi-briefcase</v-icon>
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
-        <v-card class="px-5 py-15">
+        <v-card class="px-5 py-15 mt-1 container_card">
             <v-row>
                 <v-col cols="12" md="2" sm="6">
                     <v-select
@@ -254,7 +254,6 @@ export default {
                 ...this.searchForm,
             };
             let res = await getFlexibleWorkList(param);
-            console.log(res);
             if (res.success) {
                 this.flexibleWorkList = res.response.content;
             }

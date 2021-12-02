@@ -40,9 +40,14 @@ const routes = [
                 component: () => import('@/views/test.vue'),
             },
             {
-                path: '/flexible-work/flexible-work-status',
+                path: '/flexible-work/flexible-work-type/flexible-work-status',
                 name: '유연근무 현황',
-                component: () => import('@/views/flexibleWork/FlexibleWorkStatus.vue'),
+                component: () => import('@/views/flexibleWork/flexibleWorkType/FlexibleWorkStatus.vue'),
+            },
+            {
+                path: '/flexible-work/flexible-work-group/flexible-work-group-status',
+                name: '유연근무그룹현황',
+                component: () => import('@/views/flexibleWork/flexibleWorkGroup/FlexibleWorkGroupStatus.vue'),
             },
             {
                 path: '/check-email-token',

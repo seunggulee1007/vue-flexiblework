@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <container class="modal_container">
         <v-toolbar color="purple darken-2" dark flat>
             <v-toolbar-title class="pl-5">유연근무 유형 등록</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -7,7 +7,7 @@
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
-        <v-container>
+        <section class="modal_section">
             <v-card :loading="loading">
                 <v-form ref="flexibleForm" v-model="valid" lazy-validation class="pa-10">
                     <v-row justify="space-between">
@@ -230,7 +230,7 @@
                                                 </v-menu>
                                             </template>
                                             <template v-slot:item.actions="{ item }">
-                                                <v-icon small @click="deleteItem(item)" v-if="item.id > 0">
+                                                <v-icon small @click="deleteRestItem(item)" v-if="item.id > 1">
                                                     mdi-delete
                                                 </v-icon>
                                             </template>
@@ -324,7 +324,7 @@
                                                 </v-menu>
                                             </template>
                                             <template v-slot:item.actions="{ item }">
-                                                <v-icon small @click="deleteMandatoryItem(item)" v-if="item.id > 0">
+                                                <v-icon small @click="deleteMandatoryItem(item)" v-if="item.id > 1">
                                                     mdi-delete
                                                 </v-icon>
                                             </template>
@@ -342,8 +342,8 @@
                     <v-btn color="blue darken-1" text @click="saveFlexibleWork" :disabled="!valid"> 등록 </v-btn>
                 </v-card-actions>
             </v-card>
-        </v-container>
-    </div>
+        </section>
+    </container>
 </template>
 
 <script>
@@ -374,8 +374,8 @@ export default {
             flexibleWorkTypeList: [],
             dailyWorkTimeList: [],
             settlementUnitPeriodList: [],
-            restTimeList: [{ id: 0, startTime: '', endTime: '', menu: false, menu2: false }],
-            mandatoryTimeList: [{ id: 0, startTime: '', endTime: '', menu: false, menu2: false }],
+            restTimeList: [{ id: 1, startTime: '', endTime: '', menu: false, menu2: false }],
+            mandatoryTimeList: [{ id: 1, startTime: '', endTime: '', menu: false, menu2: false }],
             headers: [
                 {
                     text: '번호',
@@ -459,7 +459,7 @@ export default {
         },
         addRestTimeList() {
             this.restTimeList.push({
-                id: this.restTimeList.length,
+                id: this.restTimeList.length + 1,
                 startTime: '',
                 endTime: '',
                 menu: false,
@@ -468,7 +468,7 @@ export default {
         },
         addMandatoryTimeList() {
             this.mandatoryTimeList.push({
-                id: this.mandatoryTimeList.length,
+                id: this.mandatoryTimeList.length + 1,
                 startTime: '',
                 endTime: '',
                 menu: false,
@@ -481,8 +481,11 @@ export default {
         saveStartTime(item) {
             this.$refs[`restStart${item.id}`].save(item.startTime);
         },
-        deleteItem(item) {
-            console.log(item);
+        deleteRestItem(item) {
+            let idx = this.restTimeList.indexOf(item);
+            if (idx != -1) {
+                this.restTimeList.splice(idx, 1);
+            }
         },
         deleteMandatoryItem(item) {
             let idx = this.mandatoryTimeList.indexOf(item);

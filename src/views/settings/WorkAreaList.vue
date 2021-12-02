@@ -1,51 +1,54 @@
 <template>
     <v-container>
-        <v-data-table :headers="headers" :items="desserts" sort-by="calories" class="elevation-1">
-            <template v-slot:top>
-                <v-toolbar flat>
-                    <v-toolbar-title>출퇴근 허용 지역 목록</v-toolbar-title>
-                    <v-divider class="mx-4" inset vertical></v-divider>
-                    <v-spacer></v-spacer>
-                    <v-dialog v-model="dialog" max-width="1000px">
+        <v-toolbar color="secondary" dark flat>
+            <v-icon>mdi-briefcase</v-icon>
+            <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
+        </v-toolbar>
+        <v-card class="px-5 py-15 mt-1 container_card">
+            <v-row>
+                <v-col cols="12" md="2" sm="6">
+                    <v-select label="검색유형" outlined dense class="mt-3"> </v-select>
+                </v-col>
+                <v-col cols="12" sm="8">
+                    <v-text-field
+                        width="150"
+                        label="검색어"
+                        append-icon="mdi-magnify"
+                        placeholder="입력하세요."
+                        required
+                        style="width: 60%; display: inline-block"
+                        class="mr-3"
+                    />
+                    <v-btn color="primary">조회</v-btn>
+                </v-col>
+                <v-col cols="12" lg="2" class="text-right">
+                    <v-dialog v-model="dialog" max-width="900px" persistent>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"> 신규등록 </v-btn>
+                            <v-btn color="error" class="pr-2 mt-3" block v-bind="attrs" v-on="on">
+                                출퇴근 허용지역 등록<v-icon right dark> mdi-plus-circle-outline </v-icon>
+                            </v-btn>
                         </template>
-                        <v-card>
-                            <v-card-title>
-                                <span class="text-h5">{{ formTitle }}</span>
-                            </v-card-title>
-                            <v-container>
-                                <enable-work-area v-if="dialog"></enable-work-area>
-                            </v-container>
-
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-                                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-                            </v-card-actions>
+                        <v-card v-if="dialog">
+                            <enable-work-area @close="closeModal"></enable-work-area>
                         </v-card>
                     </v-dialog>
-                    <v-dialog v-model="dialogDelete" max-width="500px">
-                        <v-card>
-                            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                                <v-spacer></v-spacer>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </v-toolbar>
-            </template>
-            <template v-slot:item.actions="{ item }">
-                <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-                <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-            </template>
-            <template v-slot:no-data>
-                <v-btn color="primary" @click="initialize"> Reset </v-btn>
-            </template>
-        </v-data-table>
+                </v-col>
+            </v-row>
+            <v-divider class="my-10" />
+            <v-row>
+                <v-col cols="12">
+                    <v-data-table :headers="headers" :items="desserts" hide-default-footer class="elevation-1">
+                        <template v-slot:item.actions="{ item }">
+                            <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+                            <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+                        </template>
+                        <template v-slot:no-data>
+                            <v-btn color="primary" @click="initialize"> Reset </v-btn>
+                        </template>
+                    </v-data-table>
+                </v-col>
+            </v-row>
+        </v-card>
     </v-container>
 </template>
 
@@ -60,32 +63,26 @@ export default {
         dialogDelete: false,
         headers: [
             {
-                text: 'Dessert (100g serving)',
-                align: 'start',
+                text: '순번',
+                align: 'center',
                 sortable: false,
-                value: 'name',
+                value: 'id',
             },
-            { text: 'Calories', value: 'calories' },
-            { text: 'Fat (g)', value: 'fat' },
-            { text: 'Carbs (g)', value: 'carbs' },
-            { text: 'Protein (g)', value: 'protein' },
+            { text: '지점명', value: 'name' },
+            { text: '주소', value: 'address' },
             { text: 'Actions', value: 'actions', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
+            id: 0,
             name: '',
-            calories: 0,
-            fat: 0,
-            carbs: 0,
-            protein: 0,
+            address: '',
         },
         defaultItem: {
+            id: 0,
             name: '',
-            calories: 0,
-            fat: 0,
-            carbs: 0,
-            protein: 0,
+            address: '',
         },
     }),
 
@@ -112,74 +109,29 @@ export default {
         initialize() {
             this.desserts = [
                 {
-                    name: 'Frozen Yogurt',
-                    calories: 159,
-                    fat: 6.0,
-                    carbs: 24,
-                    protein: 4.0,
+                    id: 1,
+                    name: '본사',
+                    address: '서울특별시 광진구 동일로22길 91',
                 },
                 {
-                    name: 'Ice cream sandwich',
-                    calories: 237,
-                    fat: 9.0,
-                    carbs: 37,
-                    protein: 4.3,
+                    id: 2,
+                    name: 'SCK파견지',
+                    address: '서울특별시 강남구 학동로 31길 12(논현동) 벤쳐캐슬',
                 },
                 {
-                    name: 'Eclair',
-                    calories: 262,
-                    fat: 16.0,
-                    carbs: 23,
-                    protein: 6.0,
+                    id: 3,
+                    name: '스마일게이트',
+                    address: '경기도 성남시 분당구 판교역로 220(삼평동) 쏠리드 스페이스 빌딩 5층',
                 },
                 {
-                    name: 'Cupcake',
-                    calories: 305,
-                    fat: 3.7,
-                    carbs: 67,
-                    protein: 4.3,
+                    id: 4,
+                    name: '네이버',
+                    address: '경기도 성남시 분당구 정자동 불정로 6 그린팩토리',
                 },
                 {
-                    name: 'Gingerbread',
-                    calories: 356,
-                    fat: 16.0,
-                    carbs: 49,
-                    protein: 3.9,
-                },
-                {
-                    name: 'Jelly bean',
-                    calories: 375,
-                    fat: 0.0,
-                    carbs: 94,
-                    protein: 0.0,
-                },
-                {
-                    name: 'Lollipop',
-                    calories: 392,
-                    fat: 0.2,
-                    carbs: 98,
-                    protein: 0,
-                },
-                {
-                    name: 'Honeycomb',
-                    calories: 408,
-                    fat: 3.2,
-                    carbs: 87,
-                    protein: 6.5,
-                },
-                {
-                    name: 'Donut',
-                    calories: 452,
-                    fat: 25.0,
-                    carbs: 51,
-                    protein: 4.9,
-                },
-                {
-                    name: 'KitKat',
-                    calories: 518,
-                    fat: 26.0,
-                    carbs: 65,
-                    protein: 7,
+                    id: 5,
+                    name: 'NC소프트',
+                    address: '경기도 성남시 분당구 대왕판교로 644번길 12',
                 },
             ];
         },
@@ -224,6 +176,9 @@ export default {
                 this.desserts.push(this.editedItem);
             }
             this.close();
+        },
+        closeModal() {
+            this.dialog = false;
         },
     },
 };

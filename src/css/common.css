@@ -1,3 +1,13 @@
 .input_align_right .v-text-field__slot > input {
   text-align: right;
 }
+.container_card {
+  min-height: 700px;
+}
+.modal_container {
+  max-height: 500px;
+}
+.modal_section {
+  max-height: 750px;
+  overflow: auto;
+}

@@ -9,7 +9,6 @@
                 <v-progress-linear indeterminate color="green"></v-progress-linear>
             </v-card>
         </v-overlay>
-        {{ isSnackbar }}
         <v-snackbar :color="snackbarColor" :timeout="50000" elevation="24" v-model="snackbar" class="mb-15">
             {{ snackbarMessage }}
             <template v-slot:action="{ attrs }">

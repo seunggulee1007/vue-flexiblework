@@ -1,51 +1,69 @@
 <template>
-    <v-container>
-        <v-toolbar color="secondary" dark flat>
+    <container class="modal_container">
+        <v-toolbar color="purple darken-2" dark flat>
             <v-icon>mdi-map-legend</v-icon>
-            <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
+            <v-toolbar-title class="pl-5">출퇴근 허용지역 등록</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="close">
+                <v-icon>mdi-close-box-outline</v-icon>
+            </v-btn>
         </v-toolbar>
-        <v-card class="pa-5">
-            <v-row>
-                <v-col cols="12">
-                    <v-text-field
-                        prepend-icon="mdi-domain"
-                        v-model="companyName"
-                        placeholder="표시할 지점명을 입력해 주세요."
-                        label="지점명"
-                    />
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="11">
-                    <v-text-field
-                        prepend-icon="mdi-map-marker"
-                        placeholder="검색할 주소지를 입력해 주세요."
-                        label="근무지 주소"
-                        v-model="searchKeyword"
-                    />
-                </v-col>
-                <v-col cols="1">
-                    <v-btn color="primary" @click="searchAddress">검색</v-btn>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="12">
-                    <v-text-field
-                        prepend-icon="mdi-social-distance-2-meters"
-                        label="허용 범위(미터)"
-                        v-model="distance"
-                    />
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="12">
-                    <v-card style="width: 100%; height: 300px">
-                        <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-card>
-    </v-container>
+        <section class="modal_section">
+            <v-card class="pa-5 container_card">
+                <v-form ref="workArea" v-model="valid" lazy-validation class="pa-10">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field
+                                prepend-icon="mdi-domain"
+                                v-model="companyName"
+                                placeholder="표시할 지점명을 입력해 주세요."
+                                :rules="[v => !!v || '지점명을 입력해 주세요.']"
+                                label="지점명"
+                            />
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="11">
+                            <v-text-field
+                                prepend-icon="mdi-map-marker"
+                                placeholder="검색할 주소지를 입력해 주세요."
+                                :rules="[v => !!v || '주소지를 입력해 주세요.']"
+                                label="근무지 주소"
+                                v-model="searchKeyword"
+                            />
+                        </v-col>
+                        <v-col cols="1">
+                            <v-btn color="primary" :disabled="!searchKeyword" @click="searchAddress">검색</v-btn>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field
+                                prepend-icon="mdi-social-distance-2-meters"
+                                label="허용 범위(미터)"
+                                :rules="[v => !!v || '허용범위를 입력해 주세요.']"
+                                v-model="distance"
+                            />
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-alert type="error" v-if="!result" dense outlined dismissible>{{ resultMsg }}</v-alert>
+                        <v-col cols="12">
+                            <v-card style="width: 100%; height: 400px" :loading="mapLoading">
+                                <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-form>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="close"> 취소 </v-btn>
+                    <v-btn color="blue darken-1" text :disabled="!valid" @click="saveWorkArea"> 등록 </v-btn>
+                </v-card-actions>
+            </v-card>
+        </section>
+    </container>
 </template>
 
 <script>
@@ -65,6 +83,10 @@ export default {
             infowindow: '',
             detailAddr: '',
             geocoder: {},
+            mapLoading: false,
+            result: true,
+            resultMsg: '',
+            valid: false,
         };
     },
     watch: {
@@ -85,11 +107,14 @@ export default {
     methods: {
         initMap() {
             if (!('geolocation' in navigator)) {
-                this.textContent = 'Geolocation is not available.';
+                this.resultMsg = 'Geolocation is not available.';
+                this.result = false;
+                this.mapLoading = false;
                 return;
             }
             this.geocoder = new kakao.maps.services.Geocoder();
             this.textContent = 'Locating...';
+            this.mapLoading = true;
             // get position
             navigator.geolocation.getCurrentPosition(
                 pos => {
@@ -103,46 +128,37 @@ export default {
                     let map = new kakao.maps.Map(container, options);
                     this.kakaoMap = map;
                     this.coords = new kakao.maps.LatLng(this.latitude, this.longitude);
-                    this.setMarker();
-
-                    this.setCircle(this.latitude, this.longitude);
-                    const _vm = this;
-                    kakao.maps.event.addListener(map, 'center_changed', function () {
+                    this.setAddress();
+                    kakao.maps.event.addListener(map, 'center_changed', () => {
                         // 지도의 중심좌표를 얻어옵니다
                         var latlng = map.getCenter();
-                        _vm.latitude = latlng.getLat();
-                        _vm.longitude = latlng.getLng();
-                        _vm.coords = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng());
-                        _vm.searchAddrFromCoords(latlng, function (result, status) {
-                            if (status == kakao.maps.services.Status.OK) {
-                                _vm.detailAddr = result[0].road_address
-                                    ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>'
-                                    : '';
-                                _vm.detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-                            }
-                        });
-                        _vm.setMarker();
-                        _vm.setCircle();
+                        this.latitude = latlng.getLat();
+                        this.longitude = latlng.getLng();
+                        this.coords = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng());
+                        this.setAddress();
                     });
                 },
                 err => {
-                    console.log(err.message);
+                    this.result = false;
+                    this.resultMsg = err.message;
                 },
             );
         },
         searchAddress() {
+            this.result = true;
             let geocoder = new kakao.maps.services.Geocoder();
-            const _vm = this;
-            geocoder.addressSearch(this.searchKeyword, function (result, status) {
+            geocoder.addressSearch(this.searchKeyword, (result, status) => {
                 // 정상적으로 검색이 완료됐으면
                 if (status === kakao.maps.services.Status.OK) {
-                    _vm.latitude = result[0].y;
-                    _vm.longitude = result[0].x;
-                    _vm.coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                    _vm.setMarker();
+                    this.latitude = result[0].y;
+                    this.longitude = result[0].x;
+                    this.coords = new kakao.maps.LatLng(result[0].y, result[0].x);
                     // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-                    _vm.kakaoMap.setCenter(_vm.coords);
-                    _vm.setCircle(result[0].y, result[0].x);
+                    this.kakaoMap.setCenter(this.coords);
+                    this.setAddress();
+                } else {
+                    this.result = false;
+                    this.resultMsg = '검색 결과가 없습니다. 검색어를 다시 입력해 주세요';
                 }
             });
         },
@@ -175,10 +191,9 @@ export default {
                 map: this.kakaoMap,
                 position: this.marker.getPosition(),
             });
-            const _vm = this;
             // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-            kakao.maps.event.addListener(this.marker, 'click', function () {
-                _vm.overlay.setMap(this.kakao);
+            kakao.maps.event.addListener(this.marker, 'click', () => {
+                this.setCustomOverlay();
             });
         },
         setCircle() {
@@ -205,6 +220,33 @@ export default {
             // 좌표로 행정동 주소 정보를 요청합니다
             this.geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
         },
+        setAddress() {
+            this.searchAddrFromCoords(this.coords, (result, status) => {
+                if (status == kakao.maps.services.Status.OK) {
+                    this.detailAddr = result[0].road_address
+                        ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>'
+                        : '';
+                    this.detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+                    this.searchKeyword = result[0].road_address
+                        ? result[0].road_address.address_name
+                        : result[0].address.address_name;
+                    this.setMarker();
+                    this.setCircle();
+                    this.result = true;
+                } else {
+                    this.result = false;
+                    this.resultMsg = '검색 결과가 없습니다.';
+                }
+            });
+        },
+        close() {
+            this.$emit('close');
+        },
+        saveWorkArea() {
+            if (this.$refs.workArea.validate()) {
+                this.close();
+            }
+        },
     },
 };
 </script>
@@ -212,11 +254,12 @@ export default {
 <style>
 .wrap {
     position: absolute;
-    left: 0;
-    bottom: 40px;
+    border: 1px solid gray;
+    padding: 10px;
+    bottom: 50px;
+    left: -125px;
     width: 288px;
-    height: 132px;
-    margin-left: -144px;
+    background: burlywood;
     text-align: left;
     overflow: hidden;
     font-size: 12px;

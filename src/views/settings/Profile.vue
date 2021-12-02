@@ -4,31 +4,33 @@
             <v-icon>mdi-card-account-details</v-icon>
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
-        <v-row class="justify-content-center d-flex flex-row">
-            <v-col cols="12" md="2" style="top: 0">
-                <v-tabs :vertical="!$vuetify.breakpoint.mobile" v-model="currentItem">
-                    <v-tab v-for="item in tabs" :key="item.id" style="witdh: 50%" @click="viewItems = item.id">
-                        {{ item.name }}
-                    </v-tab>
-                </v-tabs>
-            </v-col>
-            <v-col cols="12" md="10">
-                <v-tabs-items v-model="currentItem">
-                    <v-tab-item>
-                        <profile v-if="viewItems == 1" :ACCOUNT="ACCOUNT"></profile>
-                    </v-tab-item>
-                    <v-tab-item>
-                        <change-pwd v-if="viewItems == 2"></change-pwd>
-                    </v-tab-item>
-                    <v-tab-item>
-                        <commute v-if="viewItems == 3"></commute>
-                    </v-tab-item>
-                    <v-tab-item>
-                        <commute-status v-if="viewItems == 4"></commute-status>
-                    </v-tab-item>
-                </v-tabs-items>
-            </v-col>
-        </v-row>
+        <v-card class="container_card">
+            <v-row class="justify-content-center d-flex flex-row">
+                <v-col cols="12" md="2" style="top: 0">
+                    <v-tabs :vertical="!$vuetify.breakpoint.mobile" v-model="currentItem">
+                        <v-tab v-for="item in tabs" :key="item.id" style="witdh: 50%" @click="viewItems = item.id">
+                            {{ item.name }}
+                        </v-tab>
+                    </v-tabs>
+                </v-col>
+                <v-col cols="12" md="10">
+                    <v-tabs-items v-model="currentItem">
+                        <v-tab-item>
+                            <profile v-if="viewItems == 1" :ACCOUNT="ACCOUNT"></profile>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <change-pwd v-if="viewItems == 2"></change-pwd>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <commute v-if="viewItems == 3"></commute>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <commute-status v-if="viewItems == 4"></commute-status>
+                        </v-tab-item>
+                    </v-tabs-items>
+                </v-col>
+            </v-row>
+        </v-card>
     </v-container>
 </template>
 

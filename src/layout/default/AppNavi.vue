@@ -4,6 +4,7 @@
             class="grey darken-3 accent-4"
             :mini-variant.sync="navis"
             :permanent="!navis"
+            :temporary="isMobile && !navis"
             m
             dark
             app
@@ -71,6 +72,14 @@ export default {
         identicon() {
             return toSvg(this.ACCOUNT.userName, 255);
         },
+        isMobile() {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs':
+                    return true;
+                default:
+                    return false;
+            }
+        },
     },
     components: {
         ConfirmDialog,
@@ -136,7 +145,7 @@ export default {
                                 {
                                     id: 2011,
                                     name: '유연근무유형현황',
-                                    path: '/flexible-work/flexible-work-status',
+                                    path: '/flexible-work/flexible-work-type/flexible-work-status',
                                     children: [],
                                 },
                             ],
@@ -146,6 +155,12 @@ export default {
                             name: '유연근무대상관리',
                             path: '',
                             children: [
+                                {
+                                    id: 2021,
+                                    name: '유연근무그룹현황',
+                                    path: '/flexible-work/flexible-work-group/flexible-work-group-status',
+                                    children: [],
+                                },
                                 {
                                     id: 2021,
                                     name: '유연근무대상현황',
@@ -161,8 +176,14 @@ export default {
                             children: [
                                 {
                                     id: 2031,
-                                    name: '출퇴근허용지역현황',
+                                    name: '출퇴근허용지역',
                                     path: '/settings/enable-work-area',
+                                    children: [],
+                                },
+                                {
+                                    id: 2032,
+                                    name: '출퇴근허용지역현황',
+                                    path: '/settings/work-area-list',
                                     children: [],
                                 },
                             ],
