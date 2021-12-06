@@ -9,7 +9,14 @@
                 <v-progress-linear indeterminate color="green"></v-progress-linear>
             </v-card>
         </v-overlay>
-        <v-snackbar :color="snackbarColor" :timeout="50000" elevation="24" v-model="snackbar" class="mb-15">
+        <v-snackbar
+            :color="snackbarColor"
+            :timeout="snackbarTimeout"
+            elevation="20"
+            v-model="snackbar"
+            class="mb-15"
+            :width="snackbarSize"
+        >
             {{ snackbarMessage }}
             <template v-slot:action="{ attrs }">
                 <v-btn icon v-bind="attrs" @click="snackbar = false">
@@ -26,6 +33,14 @@ export default {
     name: 'app-main',
     computed: {
         ...mapGetters(['isProcess', 'processMsg', 'snackbarMessage', 'isSnackbar', 'snackbarTimeout', 'snackbarColor']),
+        snackbarSize() {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs':
+                    return 300;
+                default:
+                    return 800;
+            }
+        },
     },
     watch: {
         isSnackbar() {

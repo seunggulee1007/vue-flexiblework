@@ -8,7 +8,7 @@
             m
             dark
             app
-            :src="require('@/assets/sidebar.jpg')"
+            :src="require('@/assets/desk.jpg')"
         >
             <template #img="props">
                 <v-img :gradient="gradient" v-bind="props"></v-img>
@@ -86,7 +86,7 @@ export default {
         DefaultList: () =>
             import(
                 /* webpackChunkName: "default-list" */
-                './List'
+                '../default/List'
             ),
     },
     data() {
@@ -98,25 +98,30 @@ export default {
                     id: 1,
                     name: '기준정보관리',
                     path: '',
-                    icon: 'mdi-alarm-panel-outline',
+                    icon: 'mdi-cog-outline',
                     children: [
                         {
                             id: 101,
-                            name: '부서관리',
+                            name: '메뉴',
                             path: '',
                             icon: '',
                             children: [
                                 {
+                                    id: 1031,
+                                    name: '메뉴관리',
+                                    path: '/administrator/menu/manage-menu',
+                                    children: [],
+                                },
+                                {
                                     id: 1032,
-                                    name: '부서등록',
-                                    path: '/account/register-department',
-
+                                    name: '메뉴권한관리',
+                                    path: '',
                                     children: [],
                                 },
                             ],
                         },
                         {
-                            id: 103,
+                            id: 102,
                             name: '사원관리',
                             path: '',
                             icon: '',

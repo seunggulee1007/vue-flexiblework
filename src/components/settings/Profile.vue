@@ -180,8 +180,9 @@ export default {
                 profileImage: this.changeProfileImage,
             };
             let res = await this.CHANGE_PROFILE_IMAGE(param);
-            this.successFlag = res.success;
-            this.resultMsg = res.message;
+            console.log(res);
+            // this.successFlag = res.success;
+            // this.resultMsg = res.message;
         },
     },
 };

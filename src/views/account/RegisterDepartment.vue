@@ -6,14 +6,6 @@
         </v-toolbar>
         <v-card class="container_card" elevation="0">
             <v-row>
-                <v-card-text>
-                    <v-alert type="success" v-if="successFlag && resultMsg" dense outlined dismissible>{{
-                        resultMsg
-                    }}</v-alert>
-                    <v-alert type="error" v-else-if="!successFlag && resultMsg" dense outlined dismissible>{{
-                        resultMsg
-                    }}</v-alert>
-                </v-card-text>
                 <v-col cols="12" md="6">
                     <v-container>
                         <v-card-title>부서 검색</v-card-title>
@@ -270,19 +262,10 @@ export default {
             let res = await getDepartmentList();
             if (res.success) {
                 this.items = res.response;
-            } else {
-                this.successFlag = res.success;
-                this.resultMsg = res.message;
             }
         },
         selectDepartment(item) {
             this.department = item;
-        },
-        // 부서 등록
-        registDepartment() {
-            if (this.$refs.form.validate()) {
-                console.log('do something');
-            }
         },
         // 부서 등록 폼 초기화
         clearDepartment() {

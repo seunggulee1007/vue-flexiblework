@@ -8,7 +8,7 @@
                         <v-col class="ml-3" cols="4">
                             <v-card color="grey lighten-3 in-card">
                                 <v-row justify="center">
-                                    <div class="mt-2">
+                                    <div class="my-3">
                                         <v-avatar :size="100" v-if="ACCOUNT.profileImage">
                                             <v-img :src="ACCOUNT.profileImage"></v-img>
                                         </v-avatar>
@@ -18,7 +18,7 @@
                                     </div>
                                 </v-row>
                                 <v-row justify="center">
-                                    <div class="my-2">
+                                    <div class="">
                                         <p class="text-subtitle-2 font-weight-bold">
                                             {{ ACCOUNT.userName }} {{ ACCOUNT.position }}
                                         </p>
@@ -94,38 +94,42 @@
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>바로가기</v-card-title>
                     <div>
                         <v-row class="d-flex justify-space-around px-5 mt-2">
-                            <v-card class="mt-5 mr-1">
-                                <v-row justify="center" class="pa-5">
-                                    <v-icon x-large class="text-h1" color="light-blue lighten-1"
-                                        >mdi-calendar-arrow-right</v-icon
-                                    >
+                            <v-card class="mt-5">
+                                <v-row justify="center" class="pa-10">
+                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                        <v-icon class="text-h1"> mdi-calendar-arrow-right </v-icon>
+                                    </v-btn>
                                 </v-row>
-                                <v-row justify="center mb-3">
-                                    <v-btn text>근무계획등록</v-btn>
+                                <v-row justify="center" class="mb-3">
+                                    <span>근무계획등록</span>
                                 </v-row>
                             </v-card>
                             <v-card class="mt-5">
-                                <v-row justify="center" class="pa-5">
-                                    <v-icon x-large class="text-h1" color="light-blue lighten-1">mdi-bus-clock</v-icon>
+                                <v-row justify="center" class="pa-10">
+                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                        <v-icon class="text-h1"> mdi-bus-clock </v-icon>
+                                    </v-btn>
                                 </v-row>
-                                <v-row justify="center mb-3">
-                                    <v-btn text>출/퇴근등록</v-btn>
-                                </v-row>
-                            </v-card>
-                            <v-card class="mt-5">
-                                <v-row justify="center" class="pa-5">
-                                    <v-icon x-large class="text-h1" color="light-blue lighten-1">mdi-briefcase</v-icon>
-                                </v-row>
-                                <v-row justify="center mb-3">
-                                    <v-btn text>유연근무유형관리</v-btn>
+                                <v-row justify="center" class="mb-3">
+                                    <span>출/퇴근등록</span>
                                 </v-row>
                             </v-card>
                             <v-card class="mt-5">
-                                <v-row justify="center" class="pa-5">
-                                    <v-icon x-large class="text-h1" color="light-blue lighten-1">mdi-bus-clock</v-icon>
+                                <v-row justify="center" class="pa-10">
+                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                        <v-icon class="text-h1"> mdi-briefcase </v-icon>
+                                    </v-btn>
                                 </v-row>
-                                <v-row justify="center mb-3">
-                                    <v-btn text>근무계획등록</v-btn>
+                                <v-row justify="center" class="mb-3"> 유연근무유형관리 </v-row>
+                            </v-card>
+                            <v-card class="mt-5">
+                                <v-row justify="center" class="pa-10">
+                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                        <v-icon class="text-h1"> mdi-cog </v-icon>
+                                    </v-btn>
+                                </v-row>
+                                <v-row justify="center" class="mb-3">
+                                    <span class="mb-2"> 설정 </span>
                                 </v-row>
                             </v-card>
                         </v-row>

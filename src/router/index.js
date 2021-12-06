@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store';
+import vuetify from '@/plugins/vuetify';
 
 Vue.use(VueRouter);
 
@@ -55,15 +56,11 @@ const routes = [
                 meta: { auth: true },
                 component: () => import('@/views/CheckEmailToken.vue'),
             },
+
             {
-                path: '/settings/enable-work-area',
-                name: '출퇴근 허용 지역',
-                component: () => import('@/views/settings/EnableWorkArea.vue'),
-            },
-            {
-                path: '/settings/work-area-list',
+                path: '/flexiblework/commute/work-area-list',
                 name: '출퇴근 허용 지역 현황',
-                component: () => import('@/views/settings/WorkAreaList.vue'),
+                component: () => import('@/views/flexibleWork/commute/WorkAreaList.vue'),
             },
             {
                 path: '/account/register-department',
@@ -91,6 +88,18 @@ const routes = [
         ],
     },
     {
+        path: '/administrator',
+        component: () => import('@/layout/administrator/Index'),
+        children: [
+            {
+                path: 'menu/manage-menu',
+                name: '메뉴관리',
+                meat: { admin: true },
+                component: () => import('@/views/administrator/menu/ManageMenu'),
+            },
+        ],
+    },
+    {
         path: '/page',
         component: () => import('@/layout/page/Index.vue'),
         children: [],
@@ -111,6 +120,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     if (!to.meta.auth && !store.getters.isLogin) {
         next('/authentication/sign-in');
+    }
+    if (vuetify.framework.breakpoint.name == 'xs') {
+        store.commit('toggleNaviFlag', true);
     }
     next();
 });

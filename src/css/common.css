@@ -4,10 +4,11 @@
 .container_card {
   min-height: 700px;
 }
-.modal_container {
-  max-height: 500px;
+.modal_main {
+  max-height: 750px;
+  overflow: hidden;
 }
 .modal_section {
-  max-height: 750px;
+  max-height: 700px;
   overflow: auto;
 }

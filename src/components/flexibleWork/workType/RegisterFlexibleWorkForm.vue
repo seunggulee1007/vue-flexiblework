@@ -1,5 +1,5 @@
 <template>
-    <container class="modal_container">
+    <main class="modal_container">
         <v-toolbar color="purple darken-2" dark flat>
             <v-toolbar-title class="pl-5">유연근무 유형 등록</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -343,7 +343,7 @@
                 </v-card-actions>
             </v-card>
         </section>
-    </container>
+    </main>
 </template>
 
 <script>

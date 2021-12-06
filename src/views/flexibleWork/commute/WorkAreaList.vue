@@ -29,7 +29,7 @@
                             </v-btn>
                         </template>
                         <v-card v-if="dialog">
-                            <enable-work-area @close="closeModal"></enable-work-area>
+                            <enable-work-area @close="closeModal" :commuteAreaId="selectedId"></enable-work-area>
                         </v-card>
                     </v-dialog>
                 </v-col>
@@ -37,13 +37,15 @@
             <v-divider class="my-10" />
             <v-row>
                 <v-col cols="12">
-                    <v-data-table :headers="headers" :items="desserts" hide-default-footer class="elevation-1">
+                    <v-data-table :headers="headers" :items="commuteAreaList" hide-default-footer class="elevation-1">
+                        <template v-slot:item.roadName="{ item }">
+                            {{ `${item.roadName} ${item.detailAddress}` }}
+                        </template>
                         <template v-slot:item.actions="{ item }">
                             <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-                            <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                         </template>
                         <template v-slot:no-data>
-                            <v-btn color="primary" @click="initialize"> Reset </v-btn>
+                            <span>조회된 결과가 없습니다.</span>
                         </template>
                     </v-data-table>
                 </v-col>
@@ -53,8 +55,12 @@
 </template>
 
 <script>
-import EnableWorkArea from '@/views/settings/EnableWorkArea.vue';
+import EnableWorkArea from '@/components/flexibleWork/commute/EnableWorkAreaForm.vue';
+import { getCommuteAreaList } from '@/api/commuteArea';
 export default {
+    created() {
+        this.getCommuteAreaList();
+    },
     components: {
         EnableWorkArea,
     },
@@ -66,24 +72,18 @@ export default {
                 text: '순번',
                 align: 'center',
                 sortable: false,
-                value: 'id',
+                value: 'commuteAreaId',
             },
-            { text: '지점명', value: 'name' },
-            { text: '주소', value: 'address' },
+            { text: '지점명', value: 'areaName' },
+            { text: '주소', value: 'roadName' },
             { text: 'Actions', value: 'actions', sortable: false },
         ],
-        desserts: [],
-        editedIndex: -1,
-        editedItem: {
-            id: 0,
-            name: '',
-            address: '',
+        commuteAreaList: [],
+        pageable: {
+            number: 0,
+            size: 10,
         },
-        defaultItem: {
-            id: 0,
-            name: '',
-            address: '',
-        },
+        selectedId: 0,
     }),
 
     computed: {
@@ -96,61 +96,19 @@ export default {
         dialog(val) {
             val || this.close();
         },
-        dialogDelete(val) {
-            val || this.closeDelete();
-        },
-    },
-
-    created() {
-        this.initialize();
     },
 
     methods: {
-        initialize() {
-            this.desserts = [
-                {
-                    id: 1,
-                    name: '본사',
-                    address: '서울특별시 광진구 동일로22길 91',
-                },
-                {
-                    id: 2,
-                    name: 'SCK파견지',
-                    address: '서울특별시 강남구 학동로 31길 12(논현동) 벤쳐캐슬',
-                },
-                {
-                    id: 3,
-                    name: '스마일게이트',
-                    address: '경기도 성남시 분당구 판교역로 220(삼평동) 쏠리드 스페이스 빌딩 5층',
-                },
-                {
-                    id: 4,
-                    name: '네이버',
-                    address: '경기도 성남시 분당구 정자동 불정로 6 그린팩토리',
-                },
-                {
-                    id: 5,
-                    name: 'NC소프트',
-                    address: '경기도 성남시 분당구 대왕판교로 644번길 12',
-                },
-            ];
+        async getCommuteAreaList() {
+            let res = await getCommuteAreaList();
+            if (res.success) {
+                this.commuteAreaList = res.response.content;
+            }
         },
 
         editItem(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
+            this.selectedId = item.commuteAreaId;
             this.dialog = true;
-        },
-
-        deleteItem(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialogDelete = true;
-        },
-
-        deleteItemConfirm() {
-            this.desserts.splice(this.editedIndex, 1);
-            this.closeDelete();
         },
 
         close() {
@@ -179,6 +137,7 @@ export default {
         },
         closeModal() {
             this.dialog = false;
+            this.selectedId = 0;
         },
     },
 };

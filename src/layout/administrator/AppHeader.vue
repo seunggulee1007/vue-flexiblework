@@ -5,7 +5,6 @@
             <router-link class="text-h4 font-weight-bold home_link" to="/dashboard">Separtners</router-link>
         </v-toolbar-title>
         <v-spacer />
-        <v-btn v-if="isSuperAdmin"><router-link to="/administrator/menu/manage-menu">관리자 화면</router-link></v-btn>
     </v-app-bar>
 </template>
 

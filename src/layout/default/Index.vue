@@ -10,7 +10,8 @@
                     <v-footer v-bind="localAttrs" :padless="padless">
                         <v-card flat tile width="100%" class="grey lighten-1 text-center">
                             <v-card-text class="white--text">
-                                {{ new Date().getFullYear() }} — <strong>separtners</strong>
+                                서울특별시 광진구 동일로22길 91 3F (화양동 8-99) {{ new Date().getFullYear() }} —
+                                <strong>separtners</strong>
                             </v-card-text>
                         </v-card>
                     </v-footer>

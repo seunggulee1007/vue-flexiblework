@@ -113,11 +113,10 @@
 
 <script>
 import { getCodeList, getFlexibleWorkList } from '@/api/flexibleWork';
-import RegisterFlexibleWorkForm from '@/components/flexibleWork/RegisterFlexibleWorkForm.vue';
+import RegisterFlexibleWorkForm from '@/components/flexibleWork/workType/RegisterFlexibleWorkForm.vue';
 export default {
-    async mounted() {
-        await this.getCodeList();
-        await this.getFlexibleWorkList();
+    mounted() {
+        this.getCodeList();
     },
     components: {
         RegisterFlexibleWorkForm,
@@ -242,6 +241,7 @@ export default {
             let res = await getCodeList();
             if (res.success) {
                 this.flexibleWorkTypeList = this.defaultList.concat(res.response.flexibleWorkTypeList);
+                this.getFlexibleWorkList();
             }
         },
         closeModal() {
