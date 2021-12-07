@@ -33,7 +33,7 @@
                 ></v-data-table>
             </v-card>
             <div class="mt-6">
-                <v-data-table :headers="headers" :items="selectedItems" class="elevation-1">
+                <v-data-table :headers="selectedHeaders" :items="selectedItems" class="elevation-1">
                     <template v-slot:top>
                         <v-toolbar flat>
                             <v-toolbar-title>선택한 항목</v-toolbar-title>
@@ -45,7 +45,7 @@
                     </template>
                 </v-data-table>
                 <div class="text-center pt-2 mt-2">
-                    <v-btn color="primary" class="mr-2" @click="close">등록</v-btn>
+                    <v-btn color="primary" class="mr-2" @click="saveEmployeeDepartment">등록</v-btn>
                     <v-btn color="primary" @click="close">취소</v-btn>
                 </div>
             </div>
@@ -54,7 +54,9 @@
 </template>
 
 <script>
-import { fakeCallFromApi } from '@/api/account';
+import { getEmployeeList } from '@/api/employee';
+import { saveEmployeeDepartment } from '@/api/account/employmentManagement';
+
 export default {
     props: ['selected'],
     mounted() {
@@ -65,45 +67,67 @@ export default {
 
         this.loadSelectedItems();
     },
-    data: () => ({
-        search: '',
-        totalItems: 0,
-        items: [],
-        loading: true,
-        options: {
-            sortBy: [],
-            sortDesc: [],
-            page: 1,
-            itemsPerPage: 5,
-        },
-        selectedItems: [],
-        headers: [
-            {
-                text: '사원번호',
-                align: 'center',
-                sortable: false,
-                value: 'employeeId',
+    data() {
+        return {
+            search: '',
+            totalItems: 0,
+            items: [],
+            loading: true,
+            options: {
+                sortBy: [],
+                sortDesc: [],
+                page: 1,
+                itemsPerPage: 10,
             },
-            {
-                text: '사원명',
-                align: 'center',
-                sortable: false,
-                value: 'userName',
-            },
-            {
-                text: '이메일',
-                align: 'center',
-                sortable: false,
-                value: 'email',
-            },
-            {
-                text: '삭제',
-                align: 'center',
-                sortable: false,
-                value: 'actions',
-            },
-        ],
-    }),
+            selectedItems: [],
+            headers: [
+                {
+                    text: '사원번호',
+                    align: 'center',
+                    sortable: false,
+                    value: 'employeeId',
+                },
+                {
+                    text: '사원명',
+                    align: 'center',
+                    sortable: false,
+                    value: 'userName',
+                },
+                {
+                    text: '이메일',
+                    align: 'center',
+                    sortable: false,
+                    value: 'email',
+                },
+            ],
+            selectedHeaders: [
+                {
+                    text: '사원번호',
+                    align: 'center',
+                    sortable: false,
+                    value: 'employeeId',
+                },
+                {
+                    text: '사원명',
+                    align: 'center',
+                    sortable: false,
+                    value: 'userName',
+                },
+                {
+                    text: '이메일',
+                    align: 'center',
+                    sortable: false,
+                    value: 'email',
+                },
+                {
+                    text: '삭제',
+                    align: 'center',
+                    sortable: false,
+                    value: 'actions',
+                },
+            ],
+        };
+    },
     watch: {
         options: {
             handler() {
@@ -125,13 +149,18 @@ export default {
         // 미등록된 사원 가져오기
         async getEmployeeList() {
             this.loading = true;
-            const param = {};
-            param['options'] = this.options;
-            param['search'] = this.search;
-            let res = await fakeCallFromApi(param);
+            const param = {
+                userName: this.search,
+                email: '',
+                number: this.options.page - 1,
+                size: this.options.itemsPerPage,
+                departmentId: this.selected.departmentId,
+            };
+
+            let res = await getEmployeeList(param);
             if (res.success) {
-                this.items = res.response;
-                this.totalItems = res.total;
+                this.items = res.response.content;
+                this.totalItems = res.response.totalElements;
             } else {
                 this.successFlag = res.success;
                 this.resultMsg = res.message;
@@ -140,8 +169,30 @@ export default {
         },
         // 선택한 항목 삭제
         deleteItem(item) {
-            const employeeId = item['employeeId'];
-            this.selectedItems = this.selectedItems.filter(item => item['employeeId'] !== employeeId);
+            const employeeId = item.employeeId;
+            this.selectedItems = this.selectedItems.filter(item => item.employeeId !== employeeId);
+        },
+        // 사원 등록
+        async saveEmployeeDepartment() {
+            if (this.selectedItems.length > 0) {
+                const departmentId = this.selected.departmentId;
+                const employeeDepartment = [];
+                for (const selectedItem of this.selectedItems) {
+                    employeeDepartment.push({
+                        ...selectedItem,
+                        departmentId,
+                        rightNow: true,
+                    });
+                }
+                let res = await saveEmployeeDepartment(employeeDepartment);
+                this.successFlag = res.success;
+                this.resultMsg = res.message;
+                if (res.success) {
+                    this.$emit('success');
+                }
+            } else {
+                alert('선택한 항목이 없습니다.');
+            }
         },
         close() {
             this.$emit('close');
@@ -234,4 +285,9 @@ function resizableGrid(table) {
 }
 </script>
 
-<style></style>
+<style>
+.v-data-table__wrapper {
+    overflow: auto !important;
+    max-height: 300px;
+}
+</style>
