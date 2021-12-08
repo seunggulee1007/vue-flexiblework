@@ -10,7 +10,7 @@
                     <v-container>
                         <v-card-title>부서 검색</v-card-title>
                         <v-divider></v-divider>
-                        <v-card class="mx-auto mt-5" max-width="500">
+                        <v-card class="mx-auto mt-5" max-width="500" min-height="500" max-height="500">
                             <v-sheet class="pa-4 primary lighten-2">
                                 <v-text-field
                                     v-model="search"
@@ -137,7 +137,7 @@
                                                     <search-employee-form
                                                         :selected="selected"
                                                         @close="closeEmpDialog"
-                                                        @success="success"
+                                                        @success="saveEmployeeDepartment"
                                                     ></search-employee-form>
                                                 </v-card>
                                             </v-dialog>
@@ -282,9 +282,9 @@ export default {
         closeEmpDialog() {
             this.empDialog = false;
         },
-        success() {
-            this.getDepartmentList();
-            this.close();
+        saveEmployeeDepartment(items) {
+            this.selected.employeeDtoList = items;
+            this.closeEmpDialog();
         },
         // 부서 수정 모달
         editDepartment(item) {

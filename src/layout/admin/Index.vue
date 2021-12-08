@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import AdministratorView from '@/layout/administrator/AppMain.vue';
-import AppHeader from '@/layout/administrator/AppHeader.vue';
-import AppNavi from '@/layout/administrator/AppNavi.vue';
+import AdministratorView from '@/layout/admin/AppMain.vue';
+import AppHeader from '@/layout/admin/AppHeader.vue';
+import AppNavi from '@/layout/admin/AppNavi.vue';
 export default {
     components: {
         AdministratorView,

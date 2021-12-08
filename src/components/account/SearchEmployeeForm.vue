@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <main class="modal_container">
         <v-toolbar color="purple darken-2" dark flat>
             <v-toolbar-title class="pl-5">{{ '사원 등록' }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -7,7 +7,7 @@
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
-        <v-container fluid class="pa-7">
+        <section class="modal_section pa-7">
             <v-card>
                 <v-card-title>
                     사원명
@@ -44,28 +44,36 @@
                         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                     </template>
                 </v-data-table>
-                <div class="text-center pt-2 mt-2">
-                    <v-btn color="primary" class="mr-2" @click="saveEmployeeDepartment">등록</v-btn>
-                    <v-btn color="primary" @click="close">취소</v-btn>
-                </div>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <confirm-dialog
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        :btnText="'등록'"
+                        :confirmDetailText="'등록하시겠습니까?'"
+                        @success="saveEmployeeDepartment"
+                        :depressed="true"
+                    ></confirm-dialog>
+                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
+                </v-card-actions>
             </div>
-        </v-container>
-    </div>
+        </section>
+    </main>
 </template>
 
 <script>
 import { getEmployeeList } from '@/api/employee';
-import { saveEmployeeDepartment } from '@/api/account/employmentManagement';
+//import { saveEmployeeDepartment } from '@/api/account/employmentManagement';
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 
 export default {
     props: ['selected'],
     mounted() {
-        const tables = document.getElementsByTagName('table');
-        for (let i = 0; i < tables.length; i++) {
-            resizableGrid(tables[i]);
-        }
-
         this.loadSelectedItems();
+    },
+    components: {
+        ConfirmDialog,
     },
     data() {
         return {
@@ -157,13 +165,13 @@ export default {
                 departmentId: this.selected.departmentId,
             };
 
+            console.log(param);
+
             let res = await getEmployeeList(param);
+            console.log(res);
             if (res.success) {
                 this.items = res.response.content;
                 this.totalItems = res.response.totalElements;
-            } else {
-                this.successFlag = res.success;
-                this.resultMsg = res.message;
             }
             this.loading = false;
         },
@@ -175,21 +183,7 @@ export default {
         // 사원 등록
         async saveEmployeeDepartment() {
             if (this.selectedItems.length > 0) {
-                const departmentId = this.selected.departmentId;
-                const employeeDepartment = [];
-                for (const selectedItem of this.selectedItems) {
-                    employeeDepartment.push({
-                        ...selectedItem,
-                        departmentId,
-                        rightNow: true,
-                    });
-                }
-                let res = await saveEmployeeDepartment(employeeDepartment);
-                this.successFlag = res.success;
-                this.resultMsg = res.message;
-                if (res.success) {
-                    this.$emit('success');
-                }
+                this.$emit('success', this.selectedItems);
             } else {
                 alert('선택한 항목이 없습니다.');
             }
@@ -199,90 +193,6 @@ export default {
         },
     },
 };
-
-function resizableGrid(table) {
-    const row = table.getElementsByTagName('tr')[0],
-        cols = row ? row.children : undefined;
-    if (!cols) return;
-
-    table.style.overflow = 'hidden';
-
-    const tableHeight = table.offsetHeight;
-
-    for (let i = 0; i < cols.length; i++) {
-        const div = createDiv(tableHeight);
-        cols[i].appendChild(div);
-        cols[i].style.position = 'relative';
-        setListeners(div);
-    }
-
-    function setListeners(div) {
-        let pageX, curCol, nxtCol, curColWidth, nxtColWidth;
-
-        div.addEventListener('mousedown', function (e) {
-            curCol = e.target.parentElement;
-            nxtCol = curCol.nextElementSibling;
-            pageX = e.pageX;
-
-            const padding = paddingDiff(curCol);
-
-            curColWidth = curCol.offsetWidth - padding;
-            if (nxtCol) nxtColWidth = nxtCol.offsetWidth - padding;
-        });
-
-        div.addEventListener('mouseover', function (e) {
-            e.target.style.borderRight = '1px solid #1E88E5';
-        });
-
-        div.addEventListener('mouseout', function (e) {
-            e.target.style.borderRight = '';
-        });
-
-        document.addEventListener('mousemove', function (e) {
-            if (curCol) {
-                const diffX = e.pageX - pageX;
-
-                if (nxtCol) nxtCol.style.width = nxtColWidth - diffX + 'px';
-
-                curCol.style.width = curColWidth + diffX + 'px';
-            }
-        });
-
-        document.addEventListener('mouseup', function () {
-            curCol = undefined;
-            nxtCol = undefined;
-            pageX = undefined;
-            nxtColWidth = undefined;
-            curColWidth = undefined;
-        });
-    }
-
-    function createDiv(height) {
-        const div = document.createElement('div');
-        div.style.top = 0;
-        div.style.right = 0;
-        div.style.width = '5px';
-        div.style.position = 'absolute';
-        div.style.cursor = 'col-resize';
-        div.style.userSelect = 'none';
-        div.style.height = height + 'px';
-        return div;
-    }
-
-    function paddingDiff(col) {
-        if (getStyleVal(col, 'box-sizing') == 'border-box') {
-            return 0;
-        }
-
-        const padLeft = getStyleVal(col, 'padding-left');
-        const padRight = getStyleVal(col, 'padding-right');
-        return parseInt(padLeft) + parseInt(padRight);
-    }
-
-    function getStyleVal(elm, css) {
-        return window.getComputedStyle(elm, null).getPropertyValue(css);
-    }
-}
 </script>
 
 <style>

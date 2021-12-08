@@ -6,7 +6,7 @@ function getPositions() {
 
 function getEmployeeList(param) {
     const { departmentId } = param;
-    return doAxios(`/employee/department/${departmentId}`, 'get', param);
+    return doAxios(`/employee/departmentless/id/${departmentId}`, 'get', param);
 }
 
 export { getPositions, getEmployeeList };

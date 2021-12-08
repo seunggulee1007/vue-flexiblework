@@ -338,8 +338,17 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close"> 취소 </v-btn>
-                    <v-btn color="blue darken-1" text @click="saveFlexibleWork" :disabled="!valid"> 등록 </v-btn>
+                    <confirm-dialog
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        btnText="등록"
+                        confirmDetailText="등록하시겠습니까?"
+                        @success="saveFlexibleWork"
+                        :depressed="true"
+                        :disabled="!valid"
+                    ></confirm-dialog>
+                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
             </v-card>
         </section>
@@ -347,26 +356,19 @@
 </template>
 
 <script>
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 import { getCodeList, saveFlexibleWork } from '@/api/flexibleWork';
 export default {
+    props: ['flexibleWork'],
     mounted() {
         this.getCodeList();
+    },
+    components: {
+        ConfirmDialog,
     },
     data() {
         return {
             loading: false,
-            flexibleWork: {
-                flexibleWorkType: '', // 유연근무 제도
-                flexibleWorkName: '', //유연근무명칭
-                workDayOfWeekSet: [], //근무요일
-                dailyWorkTime: '', // 1일 근로시간
-                settlementUnitPeriod: '', // 정산단위기간
-                applyDateFrom: new Date(), // 적용시작일자
-                startTime: '', // 시작시간
-                endTime: '', // 종료시간
-                restExist: false, // 휴식시간 유무
-                mandatoryTimeExist: false, // 의무시간 유무
-            },
             valid: false,
             menu: false,
             menu2: false,

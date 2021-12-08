@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
+import mixins from './plugins/mixins';
 import VueColumnsResizableVuetify from 'vue-columns-resizable-vuetify';
 
 import VueCookie from 'vue-cookie';
@@ -12,7 +13,7 @@ Vue.use(VueCookie);
 Vue.use(VueGeolocationApi /*, { ...options } */);
 Vue.use(VueColumnsResizableVuetify);
 Vue.config.productionTip = false;
-
+Vue.mixin(mixins);
 // 통화로 변경해 주는 필터링
 Vue.filter('currency', function (value, flag) {
     if (!value) {

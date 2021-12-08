@@ -36,7 +36,7 @@
 
             <default-list :items="menus" />
             <template v-slot:append>
-                <div class="pa-2" v-if="!navis">
+                <div class="pa-3 mr-4" v-if="!navis">
                     <confirm-dialog
                         :btnColor="'error'"
                         :outlined="true"
@@ -145,7 +145,7 @@ export default {
                                 {
                                     id: 2011,
                                     name: '유연근무유형현황',
-                                    path: '/flexible-work/flexible-work-type/flexible-work-status',
+                                    path: '/flexible-work/work-type/flexible-work-status',
                                     children: [],
                                 },
                             ],
@@ -158,7 +158,7 @@ export default {
                                 {
                                     id: 2021,
                                     name: '유연근무그룹현황',
-                                    path: '/flexible-work/flexible-work-group/flexible-work-group-status',
+                                    path: '/flexible-work/work-group/flexible-work-group-status',
                                     children: [],
                                 },
                                 {
@@ -170,14 +170,14 @@ export default {
                             ],
                         },
                         {
-                            id: 203,
-                            name: '출퇴근허용지역관리',
+                            id: 301,
+                            name: '근무계획관리',
                             path: '',
                             children: [
                                 {
-                                    id: 2031,
-                                    name: '출퇴근허용지역현황',
-                                    path: '/flexiblework/commute/work-area-list',
+                                    id: 3011,
+                                    name: '근무계획현황',
+                                    path: '',
                                     children: [],
                                 },
                             ],
@@ -192,17 +192,18 @@ export default {
                     children: [
                         {
                             id: 301,
-                            name: '근무계획관리',
+                            name: '출퇴근허용지역관리',
                             path: '',
                             children: [
                                 {
                                     id: 3011,
-                                    name: '근무계획현황',
-                                    path: '',
+                                    name: '출퇴근허용지역현황',
+                                    path: '/commute/enable/work-area-list',
                                     children: [],
                                 },
                             ],
                         },
+
                         {
                             id: 302,
                             name: '출/퇴근등록',

@@ -4,9 +4,9 @@
             <v-col cols="12" md="5">
                 <v-card class="dashboard--card" elevation="5">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>출퇴근 등록</v-card-title>
-                    <v-row class="mt-5">
-                        <v-col class="ml-3" cols="4">
-                            <v-card color="grey lighten-3 in-card">
+                    <v-row class="d-flex justify-center mt-5 px-3">
+                        <v-col cols="12" md="4">
+                            <v-card color="grey lighten-3 in-card my-1">
                                 <v-row justify="center">
                                     <div class="my-3">
                                         <v-avatar :size="100" v-if="ACCOUNT.profileImage">
@@ -27,12 +27,21 @@
                                 </v-row>
                             </v-card>
                         </v-col>
-                        <v-col cols="7">
-                            <v-card class="in-card">
+                        <v-col cols="12" md="8">
+                            <v-card class="in-card my-1">
                                 <v-row>
-                                    <v-col>
-                                        <p>2021-12-01</p>
-                                        <p>12:12:35</p>
+                                    <v-col cols="4" class="mt-5">
+                                        <v-card class="py-3 ml-3 text-center">
+                                            {{ today }}
+                                        </v-card>
+                                    </v-col>
+                                    <v-col cols="4" class="mt-5">
+                                        <v-card class="py-3 text-center">
+                                            {{ time }}
+                                        </v-card>
+                                    </v-col>
+                                    <v-col cols="4" class="mt-5">
+                                        <v-btn large @click="doCommute">출근</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-card>
@@ -94,7 +103,7 @@
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>바로가기</v-card-title>
                     <div>
                         <v-row class="d-flex justify-space-around px-5 mt-2">
-                            <v-card class="mt-5">
+                            <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
                                     <v-btn icon color="light-blue lighten-1" x-large fab>
                                         <v-icon class="text-h1"> mdi-calendar-arrow-right </v-icon>
@@ -104,7 +113,7 @@
                                     <span>근무계획등록</span>
                                 </v-row>
                             </v-card>
-                            <v-card class="mt-5">
+                            <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
                                     <v-btn icon color="light-blue lighten-1" x-large fab>
                                         <v-icon class="text-h1"> mdi-bus-clock </v-icon>
@@ -114,7 +123,7 @@
                                     <span>출/퇴근등록</span>
                                 </v-row>
                             </v-card>
-                            <v-card class="mt-5">
+                            <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
                                     <v-btn icon color="light-blue lighten-1" x-large fab>
                                         <v-icon class="text-h1"> mdi-briefcase </v-icon>
@@ -122,7 +131,7 @@
                                 </v-row>
                                 <v-row justify="center" class="mb-3"> 유연근무유형관리 </v-row>
                             </v-card>
-                            <v-card class="mt-5">
+                            <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
                                     <v-btn icon color="light-blue lighten-1" x-large fab>
                                         <v-icon class="text-h1"> mdi-cog </v-icon>
@@ -136,7 +145,7 @@
                     </div>
                 </v-card>
             </v-col>
-            <v-col cols="12" md="7">
+            <v-col cols="12" md="7" class="mb-10">
                 <v-card class="dashboard--card" elevation="5">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>공지사항</v-card-title>
                     <v-data-table
@@ -149,13 +158,27 @@
                 </v-card>
             </v-col>
         </v-row>
+        <v-bottom-sheet v-model="sheet" inset>
+            <v-sheet class="text-center" height="500px" shaped>
+                <v-btn class="mt-6" text color="error" @click="sheet = !sheet"> close </v-btn>
+                <v-card style="width: 100%; height: 400px" class="px-3 pb-5" :loading="mapLoading">
+                    <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
+                </v-card>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import { toSvg } from 'jdenticon';
+import dayjs from 'dayjs';
 export default {
+    mounted() {
+        setInterval(() => {
+            this.updateNow();
+        }, 1000);
+    },
     data() {
         return {
             headers: [
@@ -204,12 +227,94 @@ export default {
                     createdDt: '2021-11-16',
                 },
             ],
+            today: dayjs().format('YYYY-MM-DD'),
+            time: dayjs().format('HH:mm:ss'),
+            sheet: false,
+            result: false,
+            resultMsg: '',
         };
     },
     computed: {
         ...mapGetters(['ACCOUNT']),
         identicon() {
             return toSvg(this.ACCOUNT.userName, 255);
+        },
+    },
+    methods: {
+        updateNow() {
+            this.today = dayjs().format('YYYY-MM-DD');
+            this.time = dayjs().format('HH:mm:ss');
+        },
+        doCommute() {
+            this.sheet = true;
+            this.initialize();
+        },
+        initialize() {
+            if (window.kakao && window.kakao.maps) {
+                this.initMap();
+            } else {
+                const script = document.createElement('script');
+                script.onload = () => kakao.maps.load(this.initMap);
+                script.src = `http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}&libraries=services`;
+                document.head.appendChild(script);
+            }
+        },
+        initMap() {
+            if (!('geolocation' in navigator)) {
+                this.result = false;
+                this.resultMsg = 'Geolocation is not available.';
+                return;
+            }
+            this.geocoder = new kakao.maps.services.Geocoder();
+            // get position
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    this.latitude = pos.coords.latitude;
+                    this.longitude = pos.coords.longitude;
+                    this.mapLoading = false;
+                    const container = this.$refs.kakaoMap;
+                    const options = {
+                        center: new kakao.maps.LatLng(this.latitude, this.longitude),
+                        level: 3,
+                    };
+                    this.kakaoMap = new kakao.maps.Map(container, options);
+                    this.kakaoMap.setDraggable(false);
+                    this.kakaoMap.setZoomable(false);
+                    this.coords = new kakao.maps.LatLng(this.latitude, this.longitude);
+                    this.setAddress();
+                },
+                err => {
+                    this.result = false;
+                    this.resultMsg = err.message;
+                },
+            );
+        },
+        setAddress() {
+            this.searchAddrFromCoords(this.coords, (result, status) => {
+                if (status == kakao.maps.services.Status.OK) {
+                    let addr = result[0].road_address
+                        ? result[0].road_address.address_name
+                        : result[0].address.address_name;
+                    this.searchAddress(addr);
+                }
+            });
+        },
+
+        searchAddress(addr) {
+            this.result = true;
+            this.geocoder.addressSearch(addr, (result, status) => {
+                // 정상적으로 검색이 완료됐으면
+                if (status === kakao.maps.services.Status.OK) {
+                    this.detailAddr = result[0].road_address
+                        ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>'
+                        : '';
+                    this.detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+                    this.setMarker();
+                } else {
+                    this.result = false;
+                    this.resultMsg = '검색 결과가 없습니다. 검색어를 다시 입력해 주세요';
+                }
+            });
         },
     },
 };
@@ -224,5 +329,25 @@ export default {
 }
 .in-card {
     min-height: 200px;
+}
+</style>
+<style>
+.wrap {
+    position: absolute;
+    border: 1px solid gray;
+    padding: 10px;
+    bottom: 50px;
+    left: -125px;
+    width: 288px;
+    background: burlywood;
+    text-align: left;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+    line-height: 1.5;
+}
+.wrap * {
+    padding: 0;
+    margin: 0;
 }
 </style>

@@ -109,114 +109,27 @@ export default {
                                 {
                                     id: 1031,
                                     name: '메뉴관리',
-                                    path: '/administrator/menu/manage-menu',
+                                    path: '/admin/menu/manage-menu',
                                     children: [],
                                 },
                                 {
                                     id: 1032,
                                     name: '메뉴권한관리',
-                                    path: '',
+                                    path: '/admin/menu/authority-menu',
                                     children: [],
                                 },
                             ],
                         },
                         {
                             id: 102,
-                            name: '사원관리',
+                            name: '권한관리',
                             path: '',
                             icon: '',
                             children: [
                                 {
                                     id: 1031,
-                                    name: '사원 현황',
-                                    path: '',
-                                    children: [],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    id: 2,
-                    name: '유연근무 관리',
-                    path: '',
-                    icon: 'mdi-folder-clock',
-                    children: [
-                        {
-                            id: 201,
-                            name: '유연근무유형관리',
-                            path: '',
-                            children: [
-                                {
-                                    id: 2011,
-                                    name: '유연근무유형현황',
-                                    path: '/flexible-work/flexible-work-type/flexible-work-status',
-                                    children: [],
-                                },
-                            ],
-                        },
-                        {
-                            id: 202,
-                            name: '유연근무대상관리',
-                            path: '',
-                            children: [
-                                {
-                                    id: 2021,
-                                    name: '유연근무그룹현황',
-                                    path: '/flexible-work/flexible-work-group/flexible-work-group-status',
-                                    children: [],
-                                },
-                                {
-                                    id: 2021,
-                                    name: '유연근무대상현황',
-                                    path: '',
-                                    children: [],
-                                },
-                            ],
-                        },
-                        {
-                            id: 203,
-                            name: '출퇴근허용지역관리',
-                            path: '',
-                            children: [
-                                {
-                                    id: 2031,
-                                    name: '출퇴근허용지역현황',
-                                    path: '/flexiblework/commute/work-area-list',
-                                    children: [],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    id: 3,
-                    name: '출/퇴근관리',
-                    path: '',
-                    icon: 'mdi-map-marker-check',
-                    children: [
-                        {
-                            id: 301,
-                            name: '근무계획관리',
-                            path: '',
-                            children: [
-                                {
-                                    id: 3011,
-                                    name: '근무계획현황',
-                                    path: '',
-                                    children: [],
-                                },
-                            ],
-                        },
-                        {
-                            id: 302,
-                            name: '출/퇴근등록',
-                            path: '',
-                            children: [
-                                {
-                                    id: 3021,
-                                    name: '출/퇴근등록 현황',
-                                    path: '',
+                                    name: '권한그룹관리',
+                                    path: '/admin/auth/authority-group',
                                     children: [],
                                 },
                             ],

@@ -40,7 +40,7 @@ function doAxios(url, method, params, config) {
         method,
         params,
         config,
-    });
+    }).catch(errFunction);
 }
 
 function errFunction(error) {

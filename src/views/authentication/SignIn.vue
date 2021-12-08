@@ -12,6 +12,7 @@
                                 :rules="emailRules"
                                 v-model="email"
                                 clearable
+                                ref="email"
                                 prepend-icon="mdi-email"
                                 @keyup.enter="validate"
                             ></v-text-field>
@@ -53,6 +54,9 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
+    mounted() {
+        this.$refs.email.focus();
+    },
     name: 'signIn',
     data() {
         return {

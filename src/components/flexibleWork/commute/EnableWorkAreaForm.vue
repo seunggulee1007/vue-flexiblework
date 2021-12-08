@@ -84,19 +84,29 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close"> 취소 </v-btn>
-                    <v-btn
-                        color="blue darken-1"
-                        text
+                    <confirm-dialog
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        btnText="등록"
+                        confirmDetailText="등록하시겠습니까?"
+                        @success="saveCommuteArea"
+                        :depressed="true"
                         :disabled="!valid"
-                        @click="saveCommuteArea"
                         v-if="!this.commuteAreaId"
-                    >
-                        등록
-                    </v-btn>
-                    <v-btn color="blue darken-1" text :disabled="!valid" @click="modifyCommuteArea" v-else>
-                        수정
-                    </v-btn>
+                    ></confirm-dialog>
+                    <confirm-dialog
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        btnText="수정"
+                        confirmDetailText="수정하시겠습니까?"
+                        @success="modifyCommuteArea"
+                        :depressed="true"
+                        :disabled="!valid"
+                        v-else
+                    ></confirm-dialog>
+                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
                 <v-overlay :value="mapLoading" :absolute="true">
                     <v-card class="text-center pa-5">
@@ -111,6 +121,7 @@
 
 <script>
 import { saveCommuteArea, modifyCommuteArea, getCommuteArea } from '@/api/commuteArea';
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 export default {
     async created() {
         if (this.commuteAreaId) {
@@ -119,6 +130,9 @@ export default {
             this.initialize();
         }
         this.overlay = true;
+    },
+    components: {
+        ConfirmDialog,
     },
     data() {
         return {
@@ -138,17 +152,10 @@ export default {
             },
             textContent: '',
             distance: 100,
-            kakaoMap: {},
-            circle: '',
-            coords: '',
-            marker: '',
-            detailAddr: '',
-            geocoder: {},
-            mapLoading: true,
+
             result: true,
             resultMsg: '',
             valid: false,
-            customOverlay: null,
         };
     },
     watch: {
@@ -176,7 +183,6 @@ export default {
                 return;
             }
             this.geocoder = new kakao.maps.services.Geocoder();
-            this.textContent = 'Locating...';
             // get position
             navigator.geolocation.getCurrentPosition(
                 pos => {
@@ -211,16 +217,13 @@ export default {
         },
         searchAddress(addr, flag) {
             this.result = true;
-            console.log(addr, ' :: ? ');
             if (!addr) {
                 addr = this.commuteArea.roadName;
             }
             this.geocoder.addressSearch(addr, (result, status) => {
-                console.log(addr, result);
                 // 정상적으로 검색이 완료됐으면
                 if (status === kakao.maps.services.Status.OK) {
                     if (!flag) {
-                        console.log('여기 아이가 ?');
                         this.commuteArea.latitude = result[0].x;
                         this.commuteArea.longitude = result[0].y;
                         this.coords = new kakao.maps.LatLng(result[0].y, result[0].x);
@@ -255,10 +258,6 @@ export default {
                 }
             });
         },
-        searchAddrFromCoords(coords, callback) {
-            // 좌표로 행정동 주소 정보를 요청합니다
-            this.geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-        },
         setAddress() {
             this.searchAddrFromCoords(this.coords, (result, status) => {
                 if (status == kakao.maps.services.Status.OK) {
@@ -272,60 +271,6 @@ export default {
                     this.resultMsg = '검색 결과가 없습니다.';
                 }
             });
-        },
-        setMarker() {
-            if (this.marker) {
-                this.marker.setPosition(this.coords);
-            } else {
-                // 결과값으로 받은 위치를 마커로 표시합니다
-                this.marker = new kakao.maps.Marker({
-                    map: this.kakaoMap,
-                    position: this.coords,
-                });
-            }
-            this.setCustomOverlay();
-        },
-        setCustomOverlay() {
-            if (this.customOverlay) {
-                this.customOverlay.setMap(null);
-            }
-            var content = `
-                <div class="wrap">
-                    ${this.detailAddr}
-                </div>
-                `;
-
-            // 마커 위에 커스텀오버레이를 표시합니다
-            // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-            this.customOverlay = new kakao.maps.CustomOverlay({
-                content: content,
-                map: this.kakaoMap,
-                position: this.marker.getPosition(),
-            });
-            // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-            kakao.maps.event.addListener(this.marker, 'click', () => {
-                this.setCustomOverlay();
-            });
-        },
-        setCircle() {
-            const distance = this.distance / 2;
-            if (this.circle) {
-                this.circle.setMap(null);
-            }
-
-            this.circle = new kakao.maps.Circle({
-                center: new kakao.maps.LatLng(this.commuteArea.latitude, this.commuteArea.longitude), // 원의 중심좌표 입니다
-                radius: distance, // 미터 단위의 원의 반지름입니다
-                strokeWeight: 5, // 선의 두께입니다
-                strokeColor: '#75B8FA', // 선의 색깔입니다
-                strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                strokeStyle: 'dashed', // 선의 스타일 입니다
-                fillColor: '#CFE7FF', // 채우기 색깔입니다
-                fillOpacity: 0.7, // 채우기 불투명도 입니다
-            });
-
-            // 지도에 원을 표시합니다
-            this.circle.setMap(this.kakaoMap);
         },
 
         close() {

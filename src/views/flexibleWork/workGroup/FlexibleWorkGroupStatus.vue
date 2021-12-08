@@ -9,7 +9,7 @@
                 <v-col cols="12" md="2" sm="6">
                     <v-select label="유연근무 유형 선택"></v-select>
                 </v-col>
-                <v-col cols="12" sm="8">
+                <v-col cols="12" sm="7">
                     <v-text-field
                         style="width: 60%; display: inline-block"
                         label="유연근무 그룹 명"
@@ -19,14 +19,16 @@
                     ></v-text-field>
                     <v-btn color="primary">조회</v-btn>
                 </v-col>
-                <v-col cols="12" lg="2" class="text-right">
+                <v-col cols="12" lg="3" class="text-right">
                     <v-dialog v-model="dialog" max-width="700px" persistent>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="error" class="pr-2 mt-3" block v-bind="attrs" v-on="on">
+                            <v-btn color="error" class="mt-3" v-bind="attrs" v-on="on">
                                 근무 그룹 등록<v-icon right dark> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>
-                        <v-card v-if="dialog"> </v-card>
+                        <v-card v-if="dialog">
+                            <flexible-work-group-form @close="closeModal"></flexible-work-group-form>
+                        </v-card>
                     </v-dialog>
                 </v-col>
             </v-row>
@@ -53,11 +55,20 @@
 </template>
 
 <script>
+import FlexibleWorkGroupForm from '@/components/flexibleWork/workGroup/FlexibleWorkGroupForm.vue';
 export default {
+    components: {
+        FlexibleWorkGroupForm,
+    },
     data() {
         return {
             dialog: false,
         };
+    },
+    methods: {
+        closeModal() {
+            this.dialog = false;
+        },
     },
 };
 </script>

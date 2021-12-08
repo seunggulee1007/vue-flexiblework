@@ -41,14 +41,14 @@ const routes = [
                 component: () => import('@/views/test.vue'),
             },
             {
-                path: '/flexible-work/flexible-work-type/flexible-work-status',
+                path: '/flexible-work/work-type/flexible-work-status',
                 name: '유연근무 현황',
-                component: () => import('@/views/flexibleWork/flexibleWorkType/FlexibleWorkStatus.vue'),
+                component: () => import('@/views/flexibleWork/workType/FlexibleWorkStatus.vue'),
             },
             {
-                path: '/flexible-work/flexible-work-group/flexible-work-group-status',
+                path: '/flexible-work/work-group/flexible-work-group-status',
                 name: '유연근무그룹현황',
-                component: () => import('@/views/flexibleWork/flexibleWorkGroup/FlexibleWorkGroupStatus.vue'),
+                component: () => import('@/views/flexibleWork/workGroup/FlexibleWorkGroupStatus.vue'),
             },
             {
                 path: '/check-email-token',
@@ -58,9 +58,9 @@ const routes = [
             },
 
             {
-                path: '/flexiblework/commute/work-area-list',
+                path: '/commute/enable/work-area-list',
                 name: '출퇴근 허용 지역 현황',
-                component: () => import('@/views/flexibleWork/commute/WorkAreaList.vue'),
+                component: () => import('@/views/commute/enable/WorkAreaList.vue'),
             },
             {
                 path: '/account/register-department',
@@ -88,14 +88,26 @@ const routes = [
         ],
     },
     {
-        path: '/administrator',
-        component: () => import('@/layout/administrator/Index'),
+        path: '/admin',
+        component: () => import('@/layout/admin/Index'),
         children: [
             {
                 path: 'menu/manage-menu',
                 name: '메뉴관리',
-                meat: { admin: true },
-                component: () => import('@/views/administrator/menu/ManageMenu'),
+                meta: { admin: true },
+                component: () => import('@/views/admin/menu/ManageMenu'),
+            },
+            {
+                path: 'menu/authority-menu',
+                name: '메뉴권한관리',
+                meta: { admin: true },
+                component: () => import('@/views/admin/menu/AuthorityMenu'),
+            },
+            {
+                path: 'auth/authority-group',
+                name: '권한그룹관리',
+                meta: { admin: true },
+                component: () => import('@/views/admin/auth/AuthorityGroup'),
             },
         ],
     },

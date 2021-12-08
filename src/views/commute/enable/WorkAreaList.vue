@@ -9,7 +9,7 @@
                 <v-col cols="12" md="2" sm="6">
                     <v-select label="검색유형" outlined dense class="mt-3"> </v-select>
                 </v-col>
-                <v-col cols="12" sm="8">
+                <v-col cols="12" sm="7">
                     <v-text-field
                         width="150"
                         label="검색어"
@@ -19,9 +19,9 @@
                         style="width: 60%; display: inline-block"
                         class="mr-3"
                     />
-                    <v-btn color="primary">조회</v-btn>
+                    <v-btn color="primary" @click="getCommuteAreaList">조회</v-btn>
                 </v-col>
-                <v-col cols="12" lg="2" class="text-right">
+                <v-col cols="12" lg="3" class="text-right">
                     <v-dialog v-model="dialog" max-width="900px" persistent>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn color="error" class="pr-2 mt-3" block v-bind="attrs" v-on="on">
@@ -37,17 +37,24 @@
             <v-divider class="my-10" />
             <v-row>
                 <v-col cols="12">
-                    <v-data-table :headers="headers" :items="commuteAreaList" hide-default-footer class="elevation-1">
-                        <template v-slot:item.roadName="{ item }">
-                            {{ `${item.roadName} ${item.detailAddress}` }}
-                        </template>
-                        <template v-slot:item.actions="{ item }">
-                            <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-                        </template>
-                        <template v-slot:no-data>
-                            <span>조회된 결과가 없습니다.</span>
-                        </template>
-                    </v-data-table>
+                    <v-col cols="12">
+                        <v-data-table
+                            :headers="headers"
+                            :items="commuteAreaList"
+                            hide-default-footer
+                            class="elevation-1"
+                        >
+                            <template v-slot:item.roadName="{ item }">
+                                {{ `${item.roadName} ${item.detailAddress}` }}
+                            </template>
+                            <template v-slot:item.actions="{ item }">
+                                <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+                            </template>
+                            <template v-slot:no-data>
+                                <span>조회된 결과가 없습니다.</span>
+                            </template>
+                        </v-data-table>
+                    </v-col>
                 </v-col>
             </v-row>
         </v-card>
@@ -127,14 +134,6 @@ export default {
             });
         },
 
-        save() {
-            if (this.editedIndex > -1) {
-                Object.assign(this.desserts[this.editedIndex], this.editedItem);
-            } else {
-                this.desserts.push(this.editedItem);
-            }
-            this.close();
-        },
         closeModal() {
             this.dialog = false;
             this.selectedId = 0;
