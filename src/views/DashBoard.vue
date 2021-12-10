@@ -4,7 +4,7 @@
             <v-col cols="12" md="5">
                 <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>출퇴근 등록</v-card-title>
-                    <v-row class="d-flex justify-center mt-5 px-3">
+                    <v-row class="d-flex justify-center mt-5 px-4">
                         <v-col cols="12" md="4">
                             <v-card color="grey lighten-3 in-card my-1" :dark="isDark">
                                 <v-row justify="center">
@@ -30,18 +30,27 @@
                         <v-col cols="12" md="8">
                             <v-card class="in-card my-1" :dark="isDark">
                                 <v-row>
-                                    <v-col cols="4" class="mt-5">
-                                        <v-card class="py-3 ml-3 text-center">
-                                            {{ today }}
+                                    <v-col class="mt-3">
+                                        <v-card class="py-3 ml-3 text-center text-h5" elevation="0">
+                                            <v-icon>mdi-clock-time-nine-outline</v-icon> {{ today }} {{ time }}
                                         </v-card>
                                     </v-col>
-                                    <v-col cols="4" class="mt-5">
-                                        <v-card class="py-3 text-center">
-                                            {{ time }}
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col>
+                                        <v-card class="py-3 text-center" elevation="0">
+                                            <v-icon>mdi-account-check-outline</v-icon><span class="text-h6"> 근무</span>
+                                            <span> 오전 9:00 ~ 오후 6:00</span>
                                         </v-card>
                                     </v-col>
-                                    <v-col cols="4" class="mt-5">
-                                        <v-btn large @click="doCommute">출근</v-btn>
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col>
+                                        <div class="mx-5">
+                                            <v-btn large block outlined rounded color="primary" @click="doCommute"
+                                                >출근</v-btn
+                                            >
+                                        </div>
                                     </v-col>
                                 </v-row>
                             </v-card>
@@ -54,43 +63,53 @@
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>근무현황</v-card-title>
                     <v-row class="d-flex justify-center px-5 mt-2">
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card>
-                                <v-toolbar color="purple darken-2" dark dense>
-                                    <v-toolbar-title class="text-subtitle-1"> 유연근무제도 </v-toolbar-title>
+                            <v-card height="150">
+                                <v-toolbar color="purple darken-1" dark dense>
+                                    <v-toolbar-title class="text-h6"> 유연근무제도 </v-toolbar-title>
                                 </v-toolbar>
-                                <v-card-text class="text-center">시차출퇴근제</v-card-text>
+                                <div class="d-flex align-center" style="height: 70%">
+                                    <v-card-text class="text-center text-subtitle-1">주52시간</v-card-text>
+                                </div>
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card>
-                                <v-toolbar color="purple darken-2" dark dense>
-                                    <v-toolbar-title class="text-subtitle-1"> 유연근무명칭 </v-toolbar-title>
+                            <v-card height="150">
+                                <v-toolbar color="#5b45ad" dark dense>
+                                    <v-toolbar-title class="text-h6"> 유연근무명칭 </v-toolbar-title>
                                 </v-toolbar>
-                                <v-card-text class="text-center">9시 출근</v-card-text>
+                                <div class="d-flex align-center" style="height: 70%">
+                                    <v-card-text class="text-center text-subtitle-1">9시 출근</v-card-text>
+                                </div>
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card>
-                                <v-toolbar color="purple darken-2" dark dense>
-                                    <v-toolbar-title class="text-subtitle-1"> 계획 근무시간 </v-toolbar-title>
+                            <v-card height="150">
+                                <v-toolbar color="purple darken-3" dark dense>
+                                    <v-toolbar-title class="text-h6"> 계획 근무시간 </v-toolbar-title>
                                 </v-toolbar>
-                                <v-card-text class="text-center">184.0</v-card-text>
+                                <div class="d-flex align-center" style="height: 70%">
+                                    <v-card-text class="text-center text-subtitle-1">184.0</v-card-text>
+                                </div>
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card>
-                                <v-toolbar color="purple darken-2" dark dense>
-                                    <v-toolbar-title class="text-subtitle-1"> 실 근무시간 </v-toolbar-title>
+                            <v-card height="150">
+                                <v-toolbar color="purple darken-4" dark dense>
+                                    <v-toolbar-title class="text-h6"> 실 근무시간 </v-toolbar-title>
                                 </v-toolbar>
-                                <v-card-text class="text-center">230.3</v-card-text>
+                                <div class="d-flex align-center" style="height: 70%">
+                                    <v-card-text class="text-center text-subtitle-1">230.3</v-card-text>
+                                </div>
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card>
-                                <v-toolbar color="purple darken-2" dark dense>
-                                    <v-toolbar-title class="text-subtitle-1"> 평균 근무시간 </v-toolbar-title>
+                            <v-card height="150">
+                                <v-toolbar color="purple lighten-1" dark dense>
+                                    <v-toolbar-title class="text-h6"> 평균 근무시간 </v-toolbar-title>
                                 </v-toolbar>
-                                <v-card-text class="text-center">46.1</v-card-text>
+                                <div class="d-flex align-center" style="height: 70%">
+                                    <v-card-text class="text-center text-subtitle-1">46.1</v-card-text>
+                                </div>
                             </v-card>
                         </v-col>
                     </v-row>
@@ -105,7 +124,7 @@
                         <v-row class="d-flex justify-space-around px-5 mt-2">
                             <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" x-large fab>
                                         <v-icon class="text-h1"> mdi-calendar-arrow-right </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -115,7 +134,7 @@
                             </v-card>
                             <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" x-large fab>
                                         <v-icon class="text-h1"> mdi-bus-clock </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -125,7 +144,7 @@
                             </v-card>
                             <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" x-large fab>
                                         <v-icon class="text-h1"> mdi-briefcase </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -133,7 +152,7 @@
                             </v-card>
                             <v-card class="mt-5 mb-3">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-1" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" x-large depressed fab>
                                         <v-icon class="text-h1"> mdi-cog </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -170,7 +189,7 @@
                         :depressed="true"
                     ></confirm-dialog>
                 </div>
-                <v-card style="width: 100%; height: 400px" class="px-3 pb-5" :loading="mapLoading">
+                <v-card style="width: 100%; height: 400px" class="px-3 pb-5" :loading="mapLoading" elevation="0">
                     <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
                 </v-card>
             </v-sheet>

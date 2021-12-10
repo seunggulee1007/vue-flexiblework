@@ -29,14 +29,22 @@
                         style="width: 60%; display: inline-block"
                         class="mr-3"
                         v-model="searchForm.flexibleWorkName"
+                        @click:append="getFlexibleWorkList"
+                        @keyup.enter="getFlexibleWorkList"
                     />
-                    <v-btn color="primary" @click="getFlexibleWorkList">조회</v-btn>
                 </v-col>
                 <v-col cols="12" lg="3" class="text-right">
                     <v-dialog v-model="dialog" max-width="700px" persistent>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="error" class="mt-3" v-bind="attrs" v-on="on">
-                                근무유형 등록<v-icon right dark> mdi-plus-circle-outline </v-icon>
+                            <v-btn
+                                color="secondary"
+                                outlined
+                                :block="$vuetify.breakpoint.name == 'xs'"
+                                class="mt-3"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                근무유형 등록<v-icon right> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>
                         <v-card v-if="dialog">

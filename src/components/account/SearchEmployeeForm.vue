@@ -1,12 +1,15 @@
 <template>
-    <main class="modal_container">
-        <v-toolbar color="purple darken-2" dark flat>
-            <v-toolbar-title class="pl-5">{{ '사원 등록' }}</v-toolbar-title>
+    <main class="modal_main">
+        <v-toolbar flat class="my-5">
+            <v-toolbar-title class="mt-5 pa-5 text-h4">
+                <v-icon large>mdi-account-plus-outline</v-icon> 사원 등록</v-toolbar-title
+            >
             <v-spacer></v-spacer>
-            <v-btn icon @click="close">
+            <v-btn icon @click="close" class="mt-5">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
+        <v-divider />
         <section class="modal_section pa-7">
             <v-card>
                 <v-card-title>
@@ -44,7 +47,7 @@
                         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                     </template>
                 </v-data-table>
-                <v-card-actions>
+                <v-card-actions class="mt-3">
                     <v-spacer></v-spacer>
                     <confirm-dialog
                         :btnColor="'primary'"
@@ -53,9 +56,10 @@
                         :btnText="'등록'"
                         :confirmDetailText="'등록하시겠습니까?'"
                         @success="saveEmployeeDepartment"
-                        :depressed="true"
+                        btnSize="large"
+                        depressed
                     ></confirm-dialog>
-                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
+                    <v-btn color="cancel" large depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
             </div>
         </section>

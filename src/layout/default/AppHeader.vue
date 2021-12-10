@@ -8,7 +8,7 @@
         <v-chip class="mr-5" @click="toggleDark" v-if="!isDark"><v-icon>mdi-weather-night</v-icon>Night mode</v-chip>
         <v-chip class="mr-5" @click="toggleDark" v-else><v-icon>mdi-weather-sunny</v-icon>Light mode</v-chip>
         <router-link class="home_link" to="/admin/menu/manage-menu" v-if="isSuperAdmin">
-            <v-btn color="secondary">관리자 화면 </v-btn>
+            <v-btn color="secondary" outlined>관리자 화면 </v-btn>
         </router-link>
     </v-app-bar>
 </template>

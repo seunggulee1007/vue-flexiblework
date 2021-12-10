@@ -4,7 +4,7 @@
             <v-icon>mdi-briefcase-account</v-icon>
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
-        <v-card class="container_card" elevation="0">
+        <v-card class="px-5 py-15 mt-1 container_card" elevation="0">
             <v-row>
                 <v-col cols="12" md="6">
                     <v-container>
@@ -32,7 +32,6 @@
                                     :open.sync="open"
                                     item-text="departmentName"
                                     item-key="departmentId"
-                                    color="warning"
                                     open-on-click
                                     transition
                                     item-children="children"
@@ -44,7 +43,7 @@
                                         ></v-icon>
                                     </template>
                                     <template v-slot:append="{ item }">
-                                        <v-btn @click="selectItem(item, $event)" small color="warning"
+                                        <v-btn @click="selectItem(item, $event)" small color="secondary" outlined
                                             >선택</v-btn
                                         ></template
                                     >
@@ -81,8 +80,8 @@
                                             <v-dialog v-model="dialog" max-width="700px" persistent>
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-btn
-                                                        color="primary"
-                                                        dark
+                                                        color="secondary"
+                                                        outlined
                                                         class="mb-2"
                                                         small
                                                         v-bind="attrs"
@@ -123,8 +122,8 @@
                                             <v-dialog v-model="empDialog" max-width="800px">
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-btn
-                                                        color="primary"
-                                                        dark
+                                                        color="secondary"
+                                                        outlined
                                                         class="mb-2"
                                                         small
                                                         v-bind="attrs"

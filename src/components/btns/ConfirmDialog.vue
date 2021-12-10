@@ -14,7 +14,7 @@
                 :small="btnSize == 'small'"
                 :large="btnSize == 'large'"
                 :x-large="btnSize == 'x-large'"
-                class="mx-3"
+                class="mx-1"
             >
                 {{ btnText }}
             </v-btn>

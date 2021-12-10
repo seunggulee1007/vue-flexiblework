@@ -1,7 +1,7 @@
 <template>
     <v-row class="mt-5">
         <v-col cols="12" md="3" sm="4" v-for="(item, idx) in flexibleWorkList" :key="idx">
-            <v-card class="pa-3 mb-2">
+            <v-card class="pa-3 mb-2" elevation="10" min-height="385">
                 <v-toolbar elevation="0">
                     <v-chip :color="item.active ? 'success' : 'secondary'">{{
                         item.active ? '운영중' : '중단'

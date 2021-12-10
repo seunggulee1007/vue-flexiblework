@@ -1,13 +1,15 @@
 <template>
     <main class="modal_main">
-        <v-toolbar color="purple darken-2" dark flat>
-            <v-icon>mdi-map-legend</v-icon>
-            <v-toolbar-title class="pl-5">출퇴근 허용지역 등록</v-toolbar-title>
+        <v-toolbar flat class="my-5">
+            <v-toolbar-title class="mt-5 pa-5 text-h4"
+                ><v-icon large>mdi-map-legend</v-icon>출퇴근 허용지역 등록</v-toolbar-title
+            >
             <v-spacer></v-spacer>
-            <v-btn icon @click="close">
+            <v-btn icon @click="close" class="mt-5">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
+        <v-divider />
         <section class="modal_section">
             <v-card class="pa-5 container_card">
                 <v-form ref="commuteArea" v-model="valid" lazy-validation class="pa-10">
@@ -211,6 +213,7 @@ export default {
                 },
                 err => {
                     this.result = false;
+                    this.mapLoading = false;
                     this.resultMsg = err.message;
                 },
             );

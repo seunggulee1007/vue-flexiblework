@@ -18,14 +18,15 @@
                         required
                         style="width: 60%; display: inline-block"
                         class="mr-3"
+                        @click:append="getCommuteAreaList"
+                        @keyup.enter="getCommuteAreaList"
                     />
-                    <v-btn color="primary" @click="getCommuteAreaList">조회</v-btn>
                 </v-col>
                 <v-col cols="12" lg="3" class="text-right">
                     <v-dialog v-model="dialog" max-width="900px" persistent>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="error" class="pr-2 mt-3" block v-bind="attrs" v-on="on">
-                                출퇴근 허용지역 등록<v-icon right dark> mdi-plus-circle-outline </v-icon>
+                            <v-btn color="secondary" outlined class="pr-2 mt-3" block v-bind="attrs" v-on="on">
+                                출퇴근 허용지역 등록<v-icon right> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>
                         <v-card v-if="dialog">

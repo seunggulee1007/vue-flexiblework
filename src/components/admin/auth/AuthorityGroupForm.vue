@@ -1,5 +1,5 @@
 <template>
-    <main class="modal_container">
+    <main class="modal_main">
         <v-toolbar color="purple darken-2" dark flat>
             <v-toolbar-title class="pl-5">권한그룹 등록</v-toolbar-title>
             <v-spacer></v-spacer>

@@ -1,12 +1,13 @@
 <template>
     <main class="modal_container">
-        <v-toolbar color="purple darken-2" dark flat>
-            <v-toolbar-title class="pl-5">유연근무 유형 등록</v-toolbar-title>
+        <v-toolbar flat class="my-5">
+            <v-toolbar-title class="mt-5 pa-5 text-h4">유연근무 유형 등록</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="close">
+            <v-btn icon @click="close" class="mt-5">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
+        <v-divider />
         <section class="modal_section">
             <v-card :loading="loading">
                 <v-form ref="flexibleForm" v-model="valid" lazy-validation class="pa-10">
