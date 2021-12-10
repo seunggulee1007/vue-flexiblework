@@ -32,4 +32,7 @@ export default {
     setSnackbarColor(state, color) {
         state.snackbarColor = color;
     },
+    toggleDark(state) {
+        state.dark = !state.dark;
+    },
 };

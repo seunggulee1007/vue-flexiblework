@@ -2,11 +2,11 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" md="5">
-                <v-card class="dashboard--card" elevation="5">
+                <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>출퇴근 등록</v-card-title>
                     <v-row class="d-flex justify-center mt-5 px-3">
                         <v-col cols="12" md="4">
-                            <v-card color="grey lighten-3 in-card my-1">
+                            <v-card color="grey lighten-3 in-card my-1" :dark="isDark">
                                 <v-row justify="center">
                                     <div class="my-3">
                                         <v-avatar :size="100" v-if="ACCOUNT.profileImage">
@@ -28,7 +28,7 @@
                             </v-card>
                         </v-col>
                         <v-col cols="12" md="8">
-                            <v-card class="in-card my-1">
+                            <v-card class="in-card my-1" :dark="isDark">
                                 <v-row>
                                     <v-col cols="4" class="mt-5">
                                         <v-card class="py-3 ml-3 text-center">
@@ -50,7 +50,7 @@
                 </v-card>
             </v-col>
             <v-col cols="12" md="7">
-                <v-card class="dashboard--card" elevation="5">
+                <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>근무현황</v-card-title>
                     <v-row class="d-flex justify-center px-5 mt-2">
                         <v-col cols="6" md="4" lg="3" xl="2">
@@ -99,7 +99,7 @@
         </v-row>
         <v-row>
             <v-col cols="12" md="5">
-                <v-card class="dashboard--card" elevation="5">
+                <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>바로가기</v-card-title>
                     <div>
                         <v-row class="d-flex justify-space-around px-5 mt-2">
@@ -146,7 +146,7 @@
                 </v-card>
             </v-col>
             <v-col cols="12" md="7" class="mb-10">
-                <v-card class="dashboard--card" elevation="5">
+                <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>공지사항</v-card-title>
                     <v-data-table
                         dense
@@ -160,7 +160,16 @@
         </v-row>
         <v-bottom-sheet v-model="sheet" inset>
             <v-sheet class="text-center" height="500px" shaped>
-                <v-btn class="mt-6" text color="error" @click="sheet = !sheet"> close </v-btn>
+                <div class="my-5">
+                    <confirm-dialog
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        btnText="출근"
+                        confirmDetailText="출근하시겠습니까?"
+                        :depressed="true"
+                    ></confirm-dialog>
+                </div>
                 <v-card style="width: 100%; height: 400px" class="px-3 pb-5" :loading="mapLoading">
                     <div ref="kakaoMap" style="width: 100%; height: 100%"></div>
                 </v-card>
@@ -170,6 +179,7 @@
 </template>
 
 <script>
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 import { mapGetters } from 'vuex';
 import { toSvg } from 'jdenticon';
 import dayjs from 'dayjs';
@@ -178,6 +188,9 @@ export default {
         setInterval(() => {
             this.updateNow();
         }, 1000);
+    },
+    components: {
+        ConfirmDialog,
     },
     data() {
         return {
@@ -235,7 +248,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['ACCOUNT']),
+        ...mapGetters(['ACCOUNT', 'isDark']),
         identicon() {
             return toSvg(this.ACCOUNT.userName, 255);
         },

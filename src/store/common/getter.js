@@ -26,4 +26,7 @@ export default {
     snackbarColor(state) {
         return state.snackbarColor;
     },
+    isDark(state) {
+        return state.dark;
+    },
 };

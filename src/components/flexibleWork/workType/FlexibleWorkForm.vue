@@ -357,7 +357,7 @@
 
 <script>
 import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
-import { getCodeList, saveFlexibleWork } from '@/api/flexibleWork';
+import { getCodeList, saveFlexibleWork } from '@/api/flexibleWork/workType';
 export default {
     props: ['flexibleWork'],
     mounted() {

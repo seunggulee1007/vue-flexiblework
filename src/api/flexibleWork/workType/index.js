@@ -1,4 +1,4 @@
-import { doAxios, doAxiosGet, doAxiosPost } from '..';
+import { doAxios, doAxiosGet, doAxiosPost } from '../..';
 
 function getFlexibleWorkList(param) {
     return doAxios('/flexible-work/list', 'get', param);

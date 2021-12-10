@@ -46,9 +46,9 @@ const routes = [
                 component: () => import('@/views/flexibleWork/workType/FlexibleWorkStatus.vue'),
             },
             {
-                path: '/flexible-work/work-group/flexible-work-group-status',
-                name: '유연근무그룹현황',
-                component: () => import('@/views/flexibleWork/workGroup/FlexibleWorkGroupStatus.vue'),
+                path: '/flexible-work/plan/flexible-work-plan',
+                name: '근무계획관리',
+                component: () => import('@/views/flexibleWork/plan/FlexibleWorkPlan'),
             },
             {
                 path: '/check-email-token',

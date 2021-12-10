@@ -151,33 +151,14 @@ export default {
                             ],
                         },
                         {
-                            id: 202,
-                            name: '유연근무대상관리',
-                            path: '',
-                            children: [
-                                {
-                                    id: 2021,
-                                    name: '유연근무그룹현황',
-                                    path: '/flexible-work/work-group/flexible-work-group-status',
-                                    children: [],
-                                },
-                                {
-                                    id: 2021,
-                                    name: '유연근무대상현황',
-                                    path: '',
-                                    children: [],
-                                },
-                            ],
-                        },
-                        {
-                            id: 301,
+                            id: 201,
                             name: '근무계획관리',
                             path: '',
                             children: [
                                 {
-                                    id: 3011,
+                                    id: 2011,
                                     name: '근무계획현황',
-                                    path: '',
+                                    path: '/flexible-work/plan/flexible-work-plan',
                                     children: [],
                                 },
                             ],

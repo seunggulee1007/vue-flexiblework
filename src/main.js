@@ -4,6 +4,7 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import mixins from './plugins/mixins';
+import VueTreeList from 'vue-tree-list';
 import VueColumnsResizableVuetify from 'vue-columns-resizable-vuetify';
 
 import VueCookie from 'vue-cookie';
@@ -12,6 +13,7 @@ import VueGeolocationApi from 'vue-geolocation-api';
 Vue.use(VueCookie);
 Vue.use(VueGeolocationApi /*, { ...options } */);
 Vue.use(VueColumnsResizableVuetify);
+Vue.use(VueTreeList);
 Vue.config.productionTip = false;
 Vue.mixin(mixins);
 // 통화로 변경해 주는 필터링
