@@ -38,7 +38,9 @@
                                     item-children="children"
                                 >
                                     <template v-slot:append="{ item }">
-                                        <v-btn @click="selectItem(item, $event)" small color="warning"> 선택</v-btn>
+                                        <v-btn @click="selectItem(item, $event)" small color="secondary" outlined>
+                                            선택</v-btn
+                                        >
                                     </template>
                                 </v-treeview>
                             </v-card-text>
@@ -58,20 +60,19 @@
                                     readonly
                                     label="메뉴명"
                                 />
-                                <v-text-field label="메뉴 경로" readonly v-model="selected.path" />
+                                <v-text-field label="메뉴 경로" readonly v-model="selected.menuPath" />
                             </v-form>
                             <v-divider />
                             <v-card-actions class="justify-end">
                                 <v-dialog v-model="dialog" max-width="700px" persistent>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn color="primary" dark class="mb-2" small v-bind="attrs" v-on="on">
+                                        <v-btn color="secondary" outlined class="mb-2" small v-bind="attrs" v-on="on">
                                             신규메뉴 등록
                                         </v-btn>
                                     </template>
                                     <v-card v-if="dialog">
                                         <register-menu-form
                                             :menu="menu"
-                                            :selected="selected"
                                             @close="close"
                                             @success="success"
                                         ></register-menu-form>
@@ -98,12 +99,15 @@
                                             <v-icon>mdi-menu</v-icon>
                                         </td>
                                         <td>{{ element.menuName }}</td>
-                                        <td>{{ element.path }}</td>
+                                        <td>{{ element.menuPath }}</td>
                                         <td>
                                             <v-btn icon>
                                                 <v-icon small @click="modifyMenu(element)">mdi-pencil</v-icon>
                                             </v-btn>
                                         </td>
+                                    </tr>
+                                    <tr v-if="selected.children.length == 0">
+                                        <td colspan="3" style="text-align: center">조회된 내용이 없습니다.</td>
                                     </tr>
                                 </draggable>
                             </table>
@@ -130,7 +134,7 @@
 import draggable from 'vuedraggable';
 import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 import RegisterMenuForm from '@/components/admin/menu/RegisterMenuForm.vue';
-import { getMenuList } from '@/api/admin/menu';
+import { getMenuList, saveMenu, modifyMenu, changeOrderNumber } from '@/api/admin/menu';
 export default {
     created() {
         this.getMenuList();
@@ -159,6 +163,7 @@ export default {
     methods: {
         async getMenuList() {
             let res = await getMenuList();
+            console.log(res);
             if (res.success) {
                 this.menuList = res.response;
             }
@@ -166,6 +171,8 @@ export default {
         selectItem(item, e) {
             e.stopPropagation();
             this.selected = item;
+            this.menu.orderNumber = this.selected.children.length + 1;
+            this.menu.parentId = this.selected.menuId;
         },
         close() {
             this.menu = {};
@@ -175,17 +182,28 @@ export default {
             this.menu = this.deepCopy(item);
             this.dialog = true;
         },
-        success() {
-            this.close();
+        async success(flag, menu) {
+            let res;
+            if (flag) {
+                res = await saveMenu(menu);
+            } else {
+                res = await modifyMenu(menu);
+            }
+            if (res.success) {
+                this.getMenuList();
+                this.close();
+            }
             // TODO 재조회 로직 추가
         },
-        changeMenuOrder() {
-            console.log(this.selected.children);
+        async changeMenuOrder() {
             for (let i = 0; i < this.selected.children.length; i++) {
                 let menu = this.selected.children[i];
                 menu.orderNumber = i + 1;
             }
-            console.log(this.selected.children);
+            let res = await changeOrderNumber(this.selected.children);
+            if (res.success) {
+                this.getMenuList();
+            }
         },
     },
 };

@@ -1,11 +1,9 @@
 <template>
     <main class="modal_main">
-        <v-toolbar flat class="my-5">
-            <v-toolbar-title class="mt-5 pa-5 text-h4"
-                ><v-icon large>mdi-map-legend</v-icon>출퇴근 허용지역 등록</v-toolbar-title
-            >
+        <v-toolbar color="modal" dark flat>
+            <v-toolbar-title class="pl-5"><v-icon large>mdi-map-legend</v-icon>출퇴근 허용지역 등록</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="close" class="mt-5">
+            <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
@@ -108,7 +106,7 @@
                         :disabled="!valid"
                         v-else
                     ></confirm-dialog>
-                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
+                    <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
                 <v-overlay :value="mapLoading" :absolute="true">
                     <v-card class="text-center pa-5">

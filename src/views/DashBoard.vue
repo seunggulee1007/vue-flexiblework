@@ -61,9 +61,9 @@
             <v-col cols="12" md="7">
                 <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>근무현황</v-card-title>
-                    <v-row class="d-flex justify-center px-5 mt-2">
+                    <v-row class="d-flex justify-space-between px-5 mt-2">
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card height="150">
+                            <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple darken-1" dark dense>
                                     <v-toolbar-title class="text-h6"> 유연근무제도 </v-toolbar-title>
                                 </v-toolbar>
@@ -73,7 +73,7 @@
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card height="150">
+                            <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="#5b45ad" dark dense>
                                     <v-toolbar-title class="text-h6"> 유연근무명칭 </v-toolbar-title>
                                 </v-toolbar>
@@ -83,7 +83,7 @@
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card height="150">
+                            <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple darken-3" dark dense>
                                     <v-toolbar-title class="text-h6"> 계획 근무시간 </v-toolbar-title>
                                 </v-toolbar>
@@ -93,7 +93,7 @@
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card height="150">
+                            <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple darken-4" dark dense>
                                     <v-toolbar-title class="text-h6"> 실 근무시간 </v-toolbar-title>
                                 </v-toolbar>
@@ -103,7 +103,7 @@
                             </v-card>
                         </v-col>
                         <v-col cols="6" md="4" lg="3" xl="2">
-                            <v-card height="150">
+                            <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple lighten-1" dark dense>
                                     <v-toolbar-title class="text-h6"> 평균 근무시간 </v-toolbar-title>
                                 </v-toolbar>
@@ -208,6 +208,22 @@ export default {
             this.updateNow();
         }, 1000);
     },
+    computed: {
+        ...mapGetters(['ACCOUNT', 'isDark']),
+        identicon() {
+            return toSvg(this.ACCOUNT.userName, 255);
+        },
+        componentSize() {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'md':
+                    return 140;
+                case 'lg':
+                    return 160;
+                default:
+                    return 140;
+            }
+        },
+    },
     components: {
         ConfirmDialog,
     },
@@ -265,12 +281,6 @@ export default {
             result: false,
             resultMsg: '',
         };
-    },
-    computed: {
-        ...mapGetters(['ACCOUNT', 'isDark']),
-        identicon() {
-            return toSvg(this.ACCOUNT.userName, 255);
-        },
     },
     methods: {
         updateNow() {

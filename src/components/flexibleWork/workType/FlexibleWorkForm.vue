@@ -1,9 +1,9 @@
 <template>
     <main class="modal_container">
-        <v-toolbar flat class="my-5">
-            <v-toolbar-title class="mt-5 pa-5 text-h4">유연근무 유형 등록</v-toolbar-title>
+        <v-toolbar color="modal" dark flat>
+            <v-toolbar-title class="pl-5">유연근무 유형 등록</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="close" class="mt-5">
+            <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
@@ -349,7 +349,7 @@
                         :depressed="true"
                         :disabled="!valid"
                     ></confirm-dialog>
-                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
+                    <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
             </v-card>
         </section>

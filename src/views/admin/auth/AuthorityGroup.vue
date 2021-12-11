@@ -32,13 +32,21 @@
                         style="width: 60%; display: inline-block"
                         class="mr-3"
                         v-model="searchForm.searchKeyword"
+                        @click:append="getAuthorityGroupList"
+                        @keyup.enter="getAuthorityGroupList"
                     />
-                    <v-btn color="primary" @click="getAuthorityGroupList">조회</v-btn>
                 </v-col>
                 <v-col cols="12" lg="2" class="text-right">
                     <v-dialog v-model="dialog" max-width="700px" persistent>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="error" class="pr-2 mt-3" block v-bind="attrs" v-on="on">
+                            <v-btn
+                                color="secondary"
+                                outlined
+                                :block="$vuetify.breakpoint.name == 'xs'"
+                                class="mt-3"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
                                 권한그룹 등록<v-icon right dark> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>
@@ -148,9 +156,14 @@ export default {
     methods: {
         async getAuthorityGroupList() {
             this.loading = true;
-            let res = await getAuthorityGroupList();
+            const param = {
+                searchKind: '',
+                searchKeyword: '',
+            };
+            let res = await getAuthorityGroupList(param);
+            console.log(res);
             if (res.success) {
-                this.authorityGroupList = res.response;
+                this.authorityGroupList = res.response.content;
             }
             this.loading = false;
         },

@@ -17,7 +17,9 @@ function setInterceptors(instance) {
     // Add a request interceptor
     instance.interceptors.request.use(
         function (config) {
-            store.commit('startSnackbar');
+            if (config.method !== 'get') {
+                store.commit('startSnackbar');
+            }
             // Do something before request is sent
             // test comment
             config.headers['X-SEPARTNERS-AUTH'] = `Bearer ${store.getters.getAccessToken}`;
@@ -53,6 +55,9 @@ function setInterceptors(instance) {
                     response: { status },
                     response: { data },
                 } = error;
+                if (config.method == 'get') {
+                    store.commit('startSnackbar');
+                }
                 if (status === 401) {
                     const originalRequest = config;
 

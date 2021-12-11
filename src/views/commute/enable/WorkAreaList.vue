@@ -25,7 +25,14 @@
                 <v-col cols="12" lg="3" class="text-right">
                     <v-dialog v-model="dialog" max-width="900px" persistent>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="secondary" outlined class="pr-2 mt-3" block v-bind="attrs" v-on="on">
+                            <v-btn
+                                color="secondary"
+                                :block="$vuetify.breakpoint.name == 'xs'"
+                                outlined
+                                class="mt-3"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
                                 출퇴근 허용지역 등록<v-icon right> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>

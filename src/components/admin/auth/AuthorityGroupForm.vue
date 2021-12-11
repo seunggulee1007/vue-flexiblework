@@ -1,6 +1,6 @@
 <template>
     <main class="modal_main">
-        <v-toolbar color="purple darken-2" dark flat>
+        <v-toolbar color="modal" dark flat>
             <v-toolbar-title class="pl-5">권한그룹 등록</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click="close">
@@ -73,7 +73,7 @@
                         :depressed="true"
                         :disabled="!valid"
                     ></confirm-dialog>
-                    <v-btn color="warning" depressed rounded outlined @click="close"> 취소 </v-btn>
+                    <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
             </v-card>
         </section>

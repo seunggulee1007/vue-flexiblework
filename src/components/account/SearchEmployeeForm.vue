@@ -1,11 +1,9 @@
 <template>
     <main class="modal_main">
-        <v-toolbar flat class="my-5">
-            <v-toolbar-title class="mt-5 pa-5 text-h4">
-                <v-icon large>mdi-account-plus-outline</v-icon> 사원 등록</v-toolbar-title
-            >
+        <v-toolbar color="modal" dark flat>
+            <v-toolbar-title class="pl-5"> <v-icon large>mdi-account-plus-outline</v-icon> 사원 등록</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="close" class="mt-5">
+            <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
@@ -50,11 +48,11 @@
                 <v-card-actions class="mt-3">
                     <v-spacer></v-spacer>
                     <confirm-dialog
-                        :btnColor="'primary'"
+                        btnColor="primary"
                         :outlined="true"
                         :rounded="true"
-                        :btnText="'등록'"
-                        :confirmDetailText="'등록하시겠습니까?'"
+                        btnText="등록"
+                        confirmDetailText="등록하시겠습니까?"
                         @success="saveEmployeeDepartment"
                         btnSize="large"
                         depressed

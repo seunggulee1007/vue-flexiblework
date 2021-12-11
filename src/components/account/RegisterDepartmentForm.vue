@@ -1,11 +1,11 @@
 <template>
     <main class="modal_main">
-        <v-toolbar flat class="my-5">
-            <v-toolbar-title class="mt-5 pa-5 text-h4">{{
-                `[${selected.departmentName}] 하위 부서 등록`
-            }}</v-toolbar-title>
+        <v-toolbar color="modal" dark flat>
+            <v-toolbar-title class="pl-5">
+                <span class="text-h5">{{ `[ ${selected.departmentName} ]` }}</span> 하위 부서 등록</v-toolbar-title
+            >
             <v-spacer></v-spacer>
-            <v-btn icon @click="close" class="mt-5">
+            <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>

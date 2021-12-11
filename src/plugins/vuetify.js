@@ -15,6 +15,7 @@ export default new Vuetify({
                 secondary: colors.lightBlue.darken1, // #FFCDD2
                 accent: colors.indigo.base, // #3F51B5
                 cancel: colors.grey.darken1,
+                modal: colors.indigo.darken2,
             },
         },
     },
