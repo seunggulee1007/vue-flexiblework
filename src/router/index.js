@@ -33,17 +33,17 @@ const routes = [
             {
                 path: '/settings/profile',
                 name: '프로필 수정',
-                component: () => import('@/views/settings/Profile.vue'),
+                component: () => import('@/views/settings/Profile'),
             },
             {
                 path: '/test',
                 name: 'test',
-                component: () => import('@/views/test.vue'),
+                component: () => import('@/views/test'),
             },
             {
                 path: '/flexible-work/work-type/flexible-work-status',
                 name: '유연근무 현황',
-                component: () => import('@/views/flexibleWork/workType/FlexibleWorkStatus.vue'),
+                component: () => import('@/views/flexibleWork/workType/FlexibleWorkStatus'),
             },
             {
                 path: '/flexible-work/plan/flexible-work-plan',
@@ -54,22 +54,27 @@ const routes = [
                 path: '/check-email-token',
                 name: '이메일 인증',
                 meta: { auth: true },
-                component: () => import('@/views/CheckEmailToken.vue'),
+                component: () => import('@/views/CheckEmailToken'),
             },
             {
                 path: '/commute/enable/work-area-status',
                 name: '출퇴근 허용 지역 현황',
-                component: () => import('@/views/commute/enable/WorkAreaStatus.vue'),
+                component: () => import('@/views/commute/enable/WorkAreaStatus'),
+            },
+            {
+                path: '/commute/enable/work-group-status',
+                name: '출퇴근 그룹 등록',
+                component: () => import('@/views/commute/enable/WorkGroupStatus'),
             },
             {
                 path: '/account/department',
                 name: '부서 등록 및 관리',
-                component: () => import('@/views/account/Department.vue'),
+                component: () => import('@/views/account/Department'),
             },
             {
                 path: '/account/employee',
                 name: '사원 현황',
-                component: () => import('@/views/account/Employee.vue'),
+                component: () => import('@/views/account/Employee'),
             },
         ],
     },

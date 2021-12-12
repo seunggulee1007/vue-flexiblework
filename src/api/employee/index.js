@@ -5,7 +5,7 @@ function getPositions() {
 }
 
 function getEmployeeList(param) {
-    return doAxios(`/employee/searchform`, param);
+    return doAxios(`/employee/searchform`, 'get', param);
 }
 
 export { getPositions, getEmployeeList };
