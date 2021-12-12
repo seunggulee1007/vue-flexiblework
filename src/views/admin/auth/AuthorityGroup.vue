@@ -119,7 +119,7 @@ export default {
                 },
                 {
                     text: '그룹 사원 수',
-                    value: 'employeeCount',
+                    value: 'groupMemberCnt',
                     align: 'center',
                     sortable: false,
                     divider: true,
@@ -161,7 +161,6 @@ export default {
                 searchKeyword: '',
             };
             let res = await getAuthorityGroupList(param);
-            console.log(res);
             if (res.success) {
                 this.authorityGroupList = res.response.content;
             }

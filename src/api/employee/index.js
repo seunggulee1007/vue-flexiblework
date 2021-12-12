@@ -1,12 +1,11 @@
-import { doAxios, doAxiosGet } from '../index';
+import { doAxiosGet, doAxios } from '../index';
 
 function getPositions() {
     return doAxiosGet('/employee/positions');
 }
 
 function getEmployeeList(param) {
-    const { departmentId } = param;
-    return doAxios(`/employee/departmentless/id/${departmentId}`, 'get', param);
+    return doAxios(`/employee/searchform`, param);
 }
 
 export { getPositions, getEmployeeList };

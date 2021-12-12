@@ -60,7 +60,6 @@ import { toSvg } from 'jdenticon';
 export default {
     watch: {
         isNaviFlag(value) {
-            console.log(value);
             this.navis = value;
         },
         navis(value) {

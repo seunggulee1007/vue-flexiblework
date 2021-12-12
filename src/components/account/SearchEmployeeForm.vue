@@ -1,7 +1,7 @@
 <template>
     <main class="modal_main">
         <v-toolbar color="modal" dark flat>
-            <v-toolbar-title class="pl-5"> <v-icon large>mdi-account-plus-outline</v-icon> 사원 등록</v-toolbar-title>
+            <v-toolbar-title class="pl-5"> <v-icon>mdi-account-plus-outline</v-icon> 사원 등록</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
@@ -10,41 +10,88 @@
         <v-divider />
         <section class="modal_section pa-7">
             <v-card>
-                <v-card-title>
-                    사원명
-                    <v-spacer></v-spacer>
-                    <v-text-field
-                        v-model="search"
-                        append-icon="mdi-magnify"
-                        label="Search"
-                        single-line
-                        hide-details
-                    ></v-text-field>
-                </v-card-title>
-                <v-data-table
-                    v-model="selectedItems"
-                    :headers="headers"
-                    :items="items"
-                    item-key="employeeId"
-                    :options.sync="options"
-                    :server-items-length="totalItems"
-                    :loading="loading"
-                    show-select
-                    class="elevation-1"
-                ></v-data-table>
-            </v-card>
-            <div class="mt-6">
-                <v-data-table :headers="selectedHeaders" :items="selectedItems" class="elevation-1">
-                    <template v-slot:top>
-                        <v-toolbar flat>
-                            <v-toolbar-title>선택한 항목</v-toolbar-title>
-                            <v-spacer></v-spacer>
-                        </v-toolbar>
-                    </template>
-                    <template v-slot:item.actions="{ item }">
-                        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-                    </template>
-                </v-data-table>
+                <v-row>
+                    <v-col cols="12" md="4">
+                        <v-card class="mx-auto px-2 overflow-auto" max-width="600" min-height="500" max-height="600">
+                            <v-card-title>부서 검색</v-card-title>
+                            <v-sheet class="pa-4 primary lighten-2">
+                                <v-text-field
+                                    v-model="search"
+                                    label="Search Company Directory"
+                                    open-on-click
+                                    activatable
+                                    dark
+                                    flat
+                                    hide-details
+                                    clearable
+                                    clear-icon="mdi-close-circle-outline"
+                                ></v-text-field>
+                            </v-sheet>
+                            <v-card-text>
+                                <v-treeview
+                                    :items="items"
+                                    :search="search"
+                                    :filter="filter"
+                                    item-text="departmentName"
+                                    item-key="departmentId"
+                                    open-on-click
+                                    transition
+                                    item-children="children"
+                                >
+                                    <template v-slot:prepend="{ item }" @click="selectDepartment(item)">
+                                        <v-icon
+                                            v-if="item.children.length > 0"
+                                            v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
+                                        ></v-icon>
+                                    </template>
+                                    <template v-slot:append="{ item }">
+                                        <v-btn @click="selectItem(item, $event)" small color="secondary" outlined
+                                            >선택</v-btn
+                                        ></template
+                                    >
+                                </v-treeview>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-card min-height="500" max-height="600" class="px-2">
+                            <v-card-title> 사원명 </v-card-title>
+                            <v-data-table
+                                v-model="selectedItems"
+                                :headers="headers"
+                                :items="employeeList"
+                                item-key="employeeId"
+                                :loading="loading"
+                                show-select
+                                class="elevation-0"
+                                height="350"
+                                hide-default-footer
+                            ></v-data-table>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-card min-height="500" max-height="600" class="px-2">
+                            <v-data-table
+                                :headers="selectedHeaders"
+                                :items="selectedItems"
+                                class="elevation-0"
+                                height="500"
+                                hide-default-footer
+                            >
+                                <template v-slot:top>
+                                    <v-toolbar flat>
+                                        <v-toolbar-title>선택한 항목</v-toolbar-title>
+                                        <v-spacer></v-spacer>
+                                    </v-toolbar>
+                                </template>
+                                <template v-slot:item.actions="{ item }">
+                                    <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-divider />
                 <v-card-actions class="mt-3">
                     <v-spacer></v-spacer>
                     <confirm-dialog
@@ -59,21 +106,20 @@
                     ></confirm-dialog>
                     <v-btn color="cancel" large depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
-            </div>
+            </v-card>
         </section>
     </main>
 </template>
 
 <script>
-import { getEmployeeList } from '@/api/employee';
-//import { saveEmployeeDepartment } from '@/api/account/employmentManagement';
 import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
-
+import { getDepartmentList } from '@/api/account';
+import { getEmployeeList } from '@/api/employee';
 export default {
-    props: ['selected'],
     mounted() {
-        this.loadSelectedItems();
+        this.getDepartmentList();
     },
+    props: ['searchKind'],
     components: {
         ConfirmDialog,
     },
@@ -82,13 +128,8 @@ export default {
             search: '',
             totalItems: 0,
             items: [],
-            loading: true,
-            options: {
-                sortBy: [],
-                sortDesc: [],
-                page: 1,
-                itemsPerPage: 10,
-            },
+            employeeList: [],
+            loading: false,
             selectedItems: [],
             headers: [
                 {
@@ -138,44 +179,33 @@ export default {
             ],
         };
     },
-    watch: {
-        options: {
-            handler() {
-                this.getEmployeeList();
-            },
-            deep: true,
-        },
-        search: {
-            handler() {
-                this.getEmployeeList();
-            },
+    computed: {
+        filter() {
+            return undefined;
         },
     },
     methods: {
-        // 등록된 사원 가져오기
-        loadSelectedItems() {
-            this.selectedItems = this.selected.employeeDtoList;
+        async getDepartmentList() {
+            let res = await getDepartmentList();
+            if (res.success) {
+                this.items = res.response;
+            }
         },
-        // 미등록된 사원 가져오기
-        async getEmployeeList() {
+        async getEmployeeList(departmentId) {
             this.loading = true;
             const param = {
-                userName: this.search,
-                email: '',
-                number: this.options.page - 1,
-                size: this.options.itemsPerPage,
-                departmentId: this.selected.departmentId,
+                departmentId,
+                commuteGroup: this.searchKind == 1,
             };
-
-            console.log(param);
-
             let res = await getEmployeeList(param);
-            console.log(res);
             if (res.success) {
-                this.items = res.response.content;
-                this.totalItems = res.response.totalElements;
+                this.employeeList = res.response;
             }
             this.loading = false;
+        },
+        selectItem(item, e) {
+            e.stopPropagation();
+            this.getEmployeeList(item.departmentId);
         },
         // 선택한 항목 삭제
         deleteItem(item) {
@@ -186,8 +216,6 @@ export default {
         async saveEmployeeDepartment() {
             if (this.selectedItems.length > 0) {
                 this.$emit('success', this.selectedItems);
-            } else {
-                alert('선택한 항목이 없습니다.');
             }
         },
         close() {

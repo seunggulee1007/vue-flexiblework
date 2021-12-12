@@ -4,7 +4,7 @@
             <v-icon>mdi-calendar-month-outline</v-icon>
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
-        <v-card class="px-5 py-15 mt-1 container_card">
+        <v-card class="px-5 py-15 mt-1 container_card" elevation="0">
             <v-row>
                 <v-col cols="12">
                     <v-card elevation="0">

@@ -14,7 +14,7 @@
                             <v-sheet class="pa-4 primary lighten-2">
                                 <v-text-field
                                     v-model="search"
-                                    label="Search Company Directory"
+                                    label="메뉴를 검색해주세요."
                                     open-on-click
                                     activatable
                                     dark
@@ -38,7 +38,15 @@
                                     item-children="children"
                                 >
                                     <template v-slot:append="{ item }">
-                                        <v-btn @click="selectItem(item, $event)" small color="warning"> 선택</v-btn>
+                                        <v-btn
+                                            @click="selectItem(item, $event)"
+                                            small
+                                            outlined
+                                            depressed
+                                            color="primary"
+                                        >
+                                            선택</v-btn
+                                        >
                                     </template>
                                 </v-treeview>
                             </v-card-text>
@@ -61,7 +69,9 @@
                                 :loading="groupLoading"
                             >
                                 <template v-slot:item.menuRole="{ item }">
-                                    <v-btn :color="menuRole(item)" @click="changeRole(item)">{{ item.menuRole }}</v-btn>
+                                    <v-btn :color="menuRole(item)" outlined @click="changeRole(item)">{{
+                                        item.menuRole || 'NONE'
+                                    }}</v-btn>
                                 </template>
                             </v-data-table>
                             <v-card-actions>

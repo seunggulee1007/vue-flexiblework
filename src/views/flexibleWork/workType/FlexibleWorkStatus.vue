@@ -4,7 +4,7 @@
             <v-icon :dark="!isDark">mdi-briefcase</v-icon>
             <v-toolbar-title class="pl-5" :dark="!isDark">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
-        <v-card class="px-5 py-15 mt-1 container_card" :dark="isDark">
+        <v-card class="px-5 py-15 mt-1 container_card" :dark="isDark" elevation="0">
             <v-row>
                 <v-col cols="12" md="2" sm="6">
                     <v-select

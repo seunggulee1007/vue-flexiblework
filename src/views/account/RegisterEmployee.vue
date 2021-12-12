@@ -135,7 +135,7 @@ export default {
             this.departmentName = item.departmentName;
             this.employeeList = item.employeeDtoList;
         },
-        handleClick(employeeId) {
+        handleClick() {
             this.employeeInfoDialog = true;
         },
         closeRegisterEmployeeModal() {
