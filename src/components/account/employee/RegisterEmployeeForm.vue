@@ -20,10 +20,10 @@
                     label="이메일"
                     type="text"
                     :rules="emailRules"
-                    v-model="employeeForm.email"
+                    v-model="email"
                     clearable
                     prepend-icon="mdi-email"
-                    @keyup.enter="validate"
+                    :error-messages="emailDupErrorMessage"
                 />
                 <v-menu
                     v-model="datePickerShow"
@@ -97,9 +97,9 @@
 
 <script>
 import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
-import SearchDepartmentForm from '@/components/account/SearchDepartmentForm.vue';
+import SearchDepartmentForm from '@/components/account/department/SearchDepartmentDialog.vue';
 import { getPositions } from '@/api/employee';
-import { saveAccount } from '@/api/account';
+import { checkDupEmail, saveAccount } from '@/api/account';
 export default {
     mounted() {
         this.getPositions();
@@ -110,6 +110,7 @@ export default {
     },
     data() {
         return {
+            email: '',
             datePickerShow: false,
             searchDepartmentDialog: false,
             employeeForm: {
@@ -124,12 +125,27 @@ export default {
             resultMsg: '',
             successResult: false,
             positions: [],
+            emailDupErrorMessage: '',
         };
+    },
+    watch: {
+        email() {
+            this.emailDupErrorMessage = '';
+        },
     },
     methods: {
         async validate() {
             if (this.$refs.form.validate()) {
-                let email1 = this.employeeForm.email.split('@')[0];
+                const email = this.email;
+                if (await this.checkDupEmail(email)) {
+                    this.emailDupErrorMessage = '이미 사용중인 이메일입니다.';
+                    return false;
+                } else {
+                    this.emailDupErrorMessage = '';
+                }
+
+                this.employeeForm.email = email;
+                let email1 = email.split('@')[0];
                 const password = email1.length >= 9 ? email1.substr(0, 9) : email1;
                 this.employeeForm.password =
                     password.length <= 5 ? `${password}2$z3%x4?c5&`.substr(0, 12) : `${password}2$z`;
@@ -142,6 +158,10 @@ export default {
                     this.$emit('save', [this.employeeForm.password]);
                 }
             }
+        },
+        async checkDupEmail(email) {
+            const res = await checkDupEmail(email);
+            return res.response;
         },
         async getPositions() {
             let res = await getPositions();

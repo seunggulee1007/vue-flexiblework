@@ -16,4 +16,8 @@ function saveAccount(param) {
     return doAxiosPost('/account', param);
 }
 
-export { getDepartmentList, saveDepartment, modifyDepartment, saveAccount };
+function checkDupEmail(email) {
+    return doAxiosGet(`/account/check-email/${email}`);
+}
+
+export { getDepartmentList, saveDepartment, modifyDepartment, saveAccount, checkDupEmail };

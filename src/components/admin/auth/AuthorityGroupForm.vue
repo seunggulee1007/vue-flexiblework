@@ -108,7 +108,7 @@
 
 <script>
 import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
-import SearchEmployeeForm from '@/components/account/SearchEmployeeForm.vue';
+import SearchEmployeeForm from '@/components/account/employee/SearchEmployeeDialog.vue';
 import { confirmDuple, saveAuthorityGroup } from '@/api/admin/authorityGroup';
 export default {
     created() {

@@ -8,31 +8,6 @@
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
         <v-card class="px-5 py-15 mt-1 container_card" elevation="0">
-            <v-col class="text-right">
-                <v-dialog v-model="registerEmployeeDialog" max-width="700px" persistent>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            color="secondary"
-                            outlined
-                            :block="$vuetify.breakpoint.name == 'xs'"
-                            class="mt-3"
-                            v-bind="attrs"
-                            v-on="on"
-                        >
-                            사원 등록<v-icon right> mdi-plus-circle-outline </v-icon>
-                        </v-btn>
-                    </template>
-                    <v-card v-if="registerEmployeeDialog">
-                        <register-employee-form
-                            @close="closeRegisterEmployeeModal"
-                            @save="saveRegisterEmployeeModal"
-                        ></register-employee-form>
-                    </v-card>
-                </v-dialog>
-            </v-col>
-
-            <v-divider></v-divider>
-
             <v-row class="pa-4" justify="space-between">
                 <v-col cols="12" md="6">
                     <v-treeview
@@ -51,16 +26,44 @@
                             ></v-icon>
                         </template>
                         <template v-slot:append="{ item }">
-                            <v-btn @click="getEmployee(item, $event)" small color="secondary" outlined
+                            <v-btn
+                                v-if="item.parentId"
+                                @click="getEmployee(item, $event)"
+                                small
+                                color="secondary"
+                                outlined
                                 >선택</v-btn
                             ></template
                         >
                     </v-treeview>
                 </v-col>
 
-                <v-divider vertical></v-divider>
+                <v-divider vertical style="min-height: 600px" />
 
                 <v-col cols="12" md="6" class="text-center">
+                    <v-col class="text-right">
+                        <v-dialog v-model="registerEmployeeDialog" max-width="700px" persistent>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    color="secondary"
+                                    outlined
+                                    :block="$vuetify.breakpoint.name == 'xs'"
+                                    class="mt-3"
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    사원 등록<v-icon right> mdi-plus-circle-outline </v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card v-if="registerEmployeeDialog">
+                                <register-employee-form
+                                    @close="closeRegisterEmployeeModal"
+                                    @save="saveRegisterEmployeeModal"
+                                ></register-employee-form>
+                            </v-card>
+                        </v-dialog>
+                    </v-col>
+
                     <v-card-title>{{ departmentName }}</v-card-title>
                     <v-simple-table>
                         <template v-slot:default>
@@ -73,11 +76,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    v-for="item in employeeList"
-                                    :key="item.employeeId"
-                                    @click="handleClick(item.employeeId)"
-                                >
+                                <tr v-for="item in employeeList" :key="item.employeeId" @click="employeeClick(item)">
                                     <td>{{ item.employeeId }}</td>
                                     <td>{{ item.userName }}</td>
                                     <td>{{ item.email }}</td>
@@ -88,7 +87,10 @@
                     </v-simple-table>
                     <v-dialog v-model="employeeInfoDialog" max-width="1000px">
                         <v-card v-if="employeeInfoDialog">
-                            <employee-info-form @close="closeEmployeeInfoModal"></employee-info-form>
+                            <employee-info-form
+                                :employee="selectedEmployee"
+                                @close="closeEmployeeInfoModal"
+                            ></employee-info-form>
                         </v-card>
                     </v-dialog>
                 </v-col>
@@ -98,8 +100,8 @@
 </template>
 <script>
 import { getDepartmentList } from '@/api/account';
-import RegisterEmployeeForm from '@/components/account/RegisterEmployeeForm.vue';
-import EmployeeInfoForm from '@/components/account/EmployeeInfoForm.vue';
+import RegisterEmployeeForm from '@/components/account/employee/RegisterEmployeeForm.vue';
+import EmployeeInfoForm from '@/components/account/employee/Employee.vue';
 export default {
     created() {
         this.getDepartmentList();
@@ -117,6 +119,7 @@ export default {
         departmentName: '',
         departmentList: [],
         employeeList: [],
+        selectedEmployee: '',
         active: [],
         avatar: null,
         open: [],
@@ -135,7 +138,8 @@ export default {
             this.departmentName = item.departmentName;
             this.employeeList = item.employeeDtoList;
         },
-        handleClick() {
+        employeeClick(employee) {
+            this.selectedEmployee = employee;
             this.employeeInfoDialog = true;
         },
         closeRegisterEmployeeModal() {

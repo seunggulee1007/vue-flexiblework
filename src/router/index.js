@@ -56,21 +56,20 @@ const routes = [
                 meta: { auth: true },
                 component: () => import('@/views/CheckEmailToken.vue'),
             },
-
             {
                 path: '/commute/enable/work-area-status',
                 name: '출퇴근 허용 지역 현황',
                 component: () => import('@/views/commute/enable/WorkAreaStatus.vue'),
             },
             {
-                path: '/account/register-department',
+                path: '/account/department',
                 name: '부서 등록 및 관리',
-                component: () => import('@/views/account/RegisterDepartment.vue'),
+                component: () => import('@/views/account/Department.vue'),
             },
             {
-                path: '/account/register-employee',
+                path: '/account/employee',
                 name: '사원 현황',
-                component: () => import('@/views/account/RegisterEmployee.vue'),
+                component: () => import('@/views/account/Employee.vue'),
             },
         ],
     },
