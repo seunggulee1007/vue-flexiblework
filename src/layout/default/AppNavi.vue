@@ -179,7 +179,7 @@ export default {
                                 {
                                     id: 3011,
                                     name: '출퇴근허용지역현황',
-                                    path: '/commute/enable/work-area-list',
+                                    path: '/commute/enable/work-area-status',
                                     children: [],
                                 },
                             ],

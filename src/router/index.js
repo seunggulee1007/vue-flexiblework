@@ -58,9 +58,9 @@ const routes = [
             },
 
             {
-                path: '/commute/enable/work-area-list',
+                path: '/commute/enable/work-area-status',
                 name: '출퇴근 허용 지역 현황',
-                component: () => import('@/views/commute/enable/WorkAreaList.vue'),
+                component: () => import('@/views/commute/enable/WorkAreaStatus.vue'),
             },
             {
                 path: '/account/register-department',
