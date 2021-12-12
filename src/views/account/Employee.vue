@@ -88,7 +88,7 @@
                     <v-dialog v-model="employeeInfoDialog" max-width="1000px">
                         <v-card v-if="employeeInfoDialog">
                             <employee-info-form
-                                :employee="selectedEmployee"
+                                :account="selectedAccount"
                                 @close="closeEmployeeInfoModal"
                             ></employee-info-form>
                         </v-card>
@@ -99,7 +99,7 @@
     </v-container>
 </template>
 <script>
-import { getDepartmentList } from '@/api/account';
+import { getAccount, getDepartmentList } from '@/api/account';
 import RegisterEmployeeForm from '@/components/account/employee/RegisterEmployeeForm.vue';
 import EmployeeInfoForm from '@/components/account/employee/Employee.vue';
 export default {
@@ -119,7 +119,8 @@ export default {
         departmentName: '',
         departmentList: [],
         employeeList: [],
-        selectedEmployee: '',
+        selectedAccount: {},
+        selectedDepartment: {},
         active: [],
         avatar: null,
         open: [],
@@ -135,23 +136,30 @@ export default {
         },
         async getEmployee(item, e) {
             e.stopPropagation();
+            this.selectedDepartment = item;
             this.departmentName = item.departmentName;
             this.employeeList = item.employeeDtoList;
         },
-        employeeClick(employee) {
-            this.selectedEmployee = employee;
+        async employeeClick(employee) {
+            const account = await getAccount(employee.accountId);
+            this.selectedAccount = account.response;
+            this.selectedAccount.employeeId = employee.employeeId;
+            this.selectedAccount.departmentId = this.selectedDepartment.departmentId;
             this.employeeInfoDialog = true;
         },
         closeRegisterEmployeeModal() {
             this.registerEmployeeDialog = false;
         },
         saveRegisterEmployeeModal(password) {
-            this.getDepartmentList();
             this.initialPassword = password;
             this.initialPasswordShow = true;
+            this.getDepartmentList();
         },
         closeEmployeeInfoModal() {
             this.employeeInfoDialog = false;
+            this.departmentName = '';
+            this.employeeList = [];
+            this.getDepartmentList();
         },
     },
 };
