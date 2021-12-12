@@ -67,6 +67,11 @@ const routes = [
                 name: '부서 등록 및 관리',
                 component: () => import('@/views/account/RegisterDepartment.vue'),
             },
+            {
+                path: '/account/register-employee',
+                name: '사원 현황',
+                component: () => import('@/views/account/RegisterEmployee.vue'),
+            },
         ],
     },
     {

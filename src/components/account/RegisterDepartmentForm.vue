@@ -69,19 +69,29 @@
                 <v-divider class="mt-5"></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close"> 취소 </v-btn>
-                    <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="saveDepartment"
+                    <confirm-dialog
                         v-if="!department.departmentId"
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        btnText="등록"
+                        confirmDetailText="등록하시겠습니까?"
+                        @success="saveDepartment"
+                        :depressed="true"
                         :disabled="!departmentValid"
-                    >
-                        등록
-                    </v-btn>
-                    <v-btn color="blue darken-1" text @click="modifyDepartment" :disabled="!departmentValid" v-else>
-                        수정
-                    </v-btn>
+                    ></confirm-dialog>
+                    <confirm-dialog
+                        v-else
+                        :btnColor="'primary'"
+                        :outlined="true"
+                        :rounded="true"
+                        btnText="수정"
+                        confirmDetailText="수정하시겠습니까?"
+                        @success="modifyDepartment"
+                        :depressed="true"
+                        :disabled="!departmentValid"
+                    ></confirm-dialog>
+                    <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>
                 </v-card-actions>
             </v-card>
         </section>
@@ -89,9 +99,13 @@
 </template>
 
 <script>
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 import { saveDepartment, modifyDepartment } from '@/api/account';
 export default {
     props: ['department', 'selected'],
+    components: {
+        ConfirmDialog,
+    },
     data() {
         return {
             departmentValid: false,

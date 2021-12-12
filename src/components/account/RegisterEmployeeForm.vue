@@ -1,92 +1,167 @@
 <template>
-    <v-card>
-        <v-card-title class="indigo white--text text-h5"> 사원 검색 </v-card-title>
-        <v-row class="pa-4" justify="space-between">
-            <v-col cols="5">
-                <v-treeview
-                    :active.sync="active"
-                    :items="items"
-                    :load-children="fetchUsers"
-                    :open.sync="open"
-                    activatable
-                    color="warning"
-                    open-on-click
-                    transition
+    <main class="modal_container">
+        <v-toolbar color="modal" dark flat>
+            <v-toolbar-title class="pl-5">사원 등록</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="close">
+                <v-icon>mdi-close-box-outline</v-icon>
+            </v-btn>
+        </v-toolbar>
+        <v-divider />
+        <section class="modal_section">
+            <v-form ref="form" v-model="valid" lazy-validation class="pa-10">
+                <v-text-field
+                    label="사원명"
+                    :rules="[v => !!v || '사원명을 입력해주세요']"
+                    v-model="employeeForm.userName"
+                    prepend-icon="mdi-account"
+                />
+                <v-text-field
+                    label="이메일"
+                    type="text"
+                    :rules="emailRules"
+                    v-model="employeeForm.email"
+                    clearable
+                    prepend-icon="mdi-email"
+                    @keyup.enter="validate"
+                />
+                <v-menu
+                    v-model="datePickerShow"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
                 >
-                    <template v-slot:prepend="{ item }">
-                        <v-icon v-if="!item.children"> mdi-account </v-icon>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                            label="일사일"
+                            prepend-icon="mdi-calendar"
+                            v-model="employeeForm.hireDate"
+                            readonly
+                            :rules="[v => !!v || '입사일을 선택해 주세요']"
+                            v-bind="attrs"
+                            v-on="on"
+                        ></v-text-field>
                     </template>
-                </v-treeview>
-            </v-col>
-
-            <v-divider vertical></v-divider>
-
-            <v-col class="d-flex text-center">
-                <v-scroll-y-transition mode="out-in">
-                    <div
-                        v-if="!selected"
-                        class="text-h6 grey--text text--lighten-1 font-weight-light"
-                        style="align-self: center"
-                    >
-                        Select a User
-                    </div>
-                    <v-card v-else :key="selected.id" class="pt-6 mx-auto" flat max-width="400">
-                        <v-card-text>
-                            <v-avatar v-if="avatar" size="88">
-                                <v-img :src="`https://avataaars.io/${avatar}`" class="mb-6"></v-img>
-                            </v-avatar>
-                            <h3 class="text-h5 mb-2">
-                                {{ selected.name }}
-                            </h3>
-                            <div class="blue--text mb-2">
-                                {{ selected.email }}
-                            </div>
-                            <div class="blue--text subheading font-weight-bold">
-                                {{ selected.username }}
-                            </div>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-row class="text-left" tag="v-card-text">
-                            <v-col class="text-right mr-4 mb-2" tag="strong" cols="5"> Company: </v-col>
-                            <v-col>{{ selected.company.name }}</v-col>
-                            <v-col class="text-right mr-4 mb-2" tag="strong" cols="5"> Website: </v-col>
-                            <v-col>
-                                <a :href="`//${selected.website}`" target="_blank">{{ selected.website }}</a>
-                            </v-col>
-                            <v-col class="text-right mr-4 mb-2" tag="strong" cols="5"> Phone: </v-col>
-                            <v-col>{{ selected.phone }}</v-col>
-                        </v-row>
+                    <v-date-picker
+                        locale="ko"
+                        v-model="employeeForm.hireDate"
+                        @input="datePickerShow = false"
+                    ></v-date-picker>
+                </v-menu>
+                <v-text-field label="사원번호" v-model="employeeForm.employeeCode" prepend-icon="mdi-counter" />
+                <v-text-field
+                    prepend-icon="mdi-folder-network"
+                    v-model="employeeForm.departmentName"
+                    :rules="[v => !!v || '부서를 선택해 주세요.']"
+                    label="부서"
+                    readonly
+                    @click="searchDepartmentDialog = true"
+                ></v-text-field>
+                <v-dialog v-model="searchDepartmentDialog" max-width="600px" persistent>
+                    <v-card v-if="searchDepartmentDialog">
+                        <search-department-form
+                            @close="closeSearchDepartmentModal"
+                            @select="selectDepartment"
+                        ></search-department-form>
                     </v-card>
-                </v-scroll-y-transition>
-            </v-col>
-        </v-row>
-    </v-card>
+                </v-dialog>
+                <v-select
+                    :items="positions"
+                    prepend-icon="mdi-account-details"
+                    item-text="title"
+                    item-value="code"
+                    v-model="employeeForm.position"
+                    label="직급"
+                />
+            </v-form>
+            <v-divider></v-divider>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <confirm-dialog
+                    :btnColor="'primary'"
+                    :outlined="true"
+                    :rounded="true"
+                    btnText="등록"
+                    confirmDetailText="등록하시겠습니까?"
+                    @success="validate"
+                    :depressed="true"
+                    :disabled="!valid"
+                ></confirm-dialog>
+                <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>
+            </v-card-actions>
+        </section>
+    </main>
 </template>
 
 <script>
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
+import SearchDepartmentForm from '@/components/account/SearchDepartmentForm.vue';
+import { getPositions } from '@/api/employee';
+import { saveAccount } from '@/api/account';
 export default {
+    mounted() {
+        this.getPositions();
+    },
+    components: {
+        ConfirmDialog,
+        SearchDepartmentForm,
+    },
     data() {
         return {
-            active: [],
-            open: [],
-            accounts: [],
+            datePickerShow: false,
+            searchDepartmentDialog: false,
+            employeeForm: {
+                position: '',
+            },
+            valid: false,
+            emailRules: [
+                v => !!v || '이메일을 입력해 주세요.',
+                v => /.+@.+\..+/.test(v) || '이메일 형식이 유효하지 않습니다.',
+            ],
+            result: false,
+            resultMsg: '',
+            successResult: false,
+            positions: [],
         };
     },
-    computed: {
-        items() {
-            return [
-                {
-                    name: 'accounts',
-                    children: this.accounts,
-                },
-            ];
+    methods: {
+        async validate() {
+            if (this.$refs.form.validate()) {
+                let email1 = this.employeeForm.email.split('@')[0];
+                const password = email1.length >= 9 ? email1.substr(0, 9) : email1;
+                this.employeeForm.password =
+                    password.length <= 5 ? `${password}2$z3%x4?c5&`.substr(0, 12) : `${password}2$z`;
+                let res = await saveAccount(this.employeeForm);
+                this.result = !res.success;
+                this.resultMsg = res.message;
+                if (res.success) {
+                    this.successResult = true;
+                    this.$emit('close');
+                    this.$emit('save', [this.employeeForm.password]);
+                }
+            }
         },
-        selected() {
-            if (!this.active.length) return undefined;
-
-            const id = this.active[0];
-
-            return this.accounts.find(account => account.id === id);
+        async getPositions() {
+            let res = await getPositions();
+            if (res.success) {
+                this.positions = res.response;
+                if (this.positions.length > 0) {
+                    this.employeeForm.position = res.response[0].code;
+                }
+            }
+        },
+        close() {
+            this.$emit('close');
+        },
+        closeSearchDepartmentModal() {
+            this.searchDepartmentDialog = false;
+        },
+        selectDepartment(departments) {
+            const department = departments[0];
+            this.employeeForm.departmentId = department.departmentId;
+            this.employeeForm.departmentName = department.departmentName;
         },
     },
 };

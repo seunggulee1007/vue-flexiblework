@@ -124,7 +124,7 @@ export default {
                                 {
                                     id: 1031,
                                     name: '사원 현황',
-                                    path: '',
+                                    path: '/account/register-employee',
                                     children: [],
                                 },
                             ],

@@ -12,4 +12,8 @@ function modifyDepartment(param) {
     return doAxiosPut('/department', param);
 }
 
-export { getDepartmentList, saveDepartment, modifyDepartment };
+function saveAccount(param) {
+    return doAxiosPost('/account', param);
+}
+
+export { getDepartmentList, saveDepartment, modifyDepartment, saveAccount };
