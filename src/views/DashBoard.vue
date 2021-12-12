@@ -61,8 +61,8 @@
             <v-col cols="12" md="7">
                 <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>근무현황</v-card-title>
-                    <v-row class="d-flex justify-space-between px-5 mt-2">
-                        <v-col cols="6" md="4" lg="3" xl="2">
+                    <v-row class="px-5 mt-2">
+                        <v-col cols="12" class="d-flex justify-space-between flex-column flex-sm-row">
                             <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple darken-1" dark dense>
                                     <v-toolbar-title class="text-h6"> 유연근무제도 </v-toolbar-title>
@@ -71,8 +71,6 @@
                                     <v-card-text class="text-center text-subtitle-1">주52시간</v-card-text>
                                 </div>
                             </v-card>
-                        </v-col>
-                        <v-col cols="6" md="4" lg="3" xl="2">
                             <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="#5b45ad" dark dense>
                                     <v-toolbar-title class="text-h6"> 유연근무명칭 </v-toolbar-title>
@@ -81,8 +79,6 @@
                                     <v-card-text class="text-center text-subtitle-1">9시 출근</v-card-text>
                                 </div>
                             </v-card>
-                        </v-col>
-                        <v-col cols="6" md="4" lg="3" xl="2">
                             <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple darken-3" dark dense>
                                     <v-toolbar-title class="text-h6"> 계획 근무시간 </v-toolbar-title>
@@ -91,8 +87,6 @@
                                     <v-card-text class="text-center text-subtitle-1">184.0</v-card-text>
                                 </div>
                             </v-card>
-                        </v-col>
-                        <v-col cols="6" md="4" lg="3" xl="2">
                             <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple darken-4" dark dense>
                                     <v-toolbar-title class="text-h6"> 실 근무시간 </v-toolbar-title>
@@ -101,8 +95,6 @@
                                     <v-card-text class="text-center text-subtitle-1">230.3</v-card-text>
                                 </div>
                             </v-card>
-                        </v-col>
-                        <v-col cols="6" md="4" lg="3" xl="2">
                             <v-card height="180" :min-width="componentSize">
                                 <v-toolbar color="purple lighten-1" dark dense>
                                     <v-toolbar-title class="text-h6"> 평균 근무시간 </v-toolbar-title>
@@ -120,11 +112,11 @@
             <v-col cols="12" md="5">
                 <v-card class="dashboard--card" elevation="5" :dark="isDark">
                     <v-card-title><v-icon color="orange">mdi-drag-vertical</v-icon>바로가기</v-card-title>
-                    <div>
-                        <v-row class="d-flex justify-space-around px-5 mt-2">
-                            <v-card class="mt-5 mb-3">
+                    <v-row class="px-5 mt-2">
+                        <v-col cols="12" class="d-flex justify-space-between flex-column flex-sm-row">
+                            <v-card class="mt-5 mb-3" :min-height="buttonSize">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-2" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" large fab>
                                         <v-icon class="text-h1"> mdi-calendar-arrow-right </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -132,9 +124,9 @@
                                     <span>근무계획등록</span>
                                 </v-row>
                             </v-card>
-                            <v-card class="mt-5 mb-3">
+                            <v-card class="mt-5 mb-3" :min-height="buttonSize">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-2" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" large fab>
                                         <v-icon class="text-h1"> mdi-bus-clock </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -142,17 +134,17 @@
                                     <span>출/퇴근등록</span>
                                 </v-row>
                             </v-card>
-                            <v-card class="mt-5 mb-3">
+                            <v-card class="mt-5 mb-3" :min-height="buttonSize">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-2" x-large fab>
+                                    <v-btn icon color="light-blue lighten-2" large fab>
                                         <v-icon class="text-h1"> mdi-briefcase </v-icon>
                                     </v-btn>
                                 </v-row>
                                 <v-row justify="center" class="mb-3"> 유연근무유형관리 </v-row>
                             </v-card>
-                            <v-card class="mt-5 mb-3">
+                            <v-card class="mt-5 mb-3" :min-height="buttonSize">
                                 <v-row justify="center" class="pa-10">
-                                    <v-btn icon color="light-blue lighten-2" x-large depressed fab>
+                                    <v-btn icon color="light-blue lighten-2" large depressed fab>
                                         <v-icon class="text-h1"> mdi-cog </v-icon>
                                     </v-btn>
                                 </v-row>
@@ -160,8 +152,8 @@
                                     <span class="mb-2"> 설정 </span>
                                 </v-row>
                             </v-card>
-                        </v-row>
-                    </div>
+                        </v-col>
+                    </v-row>
                 </v-card>
             </v-col>
             <v-col cols="12" md="7" class="mb-10">
@@ -215,10 +207,16 @@ export default {
         },
         componentSize() {
             switch (this.$vuetify.breakpoint.name) {
-                case 'md':
-                    return 140;
                 case 'lg':
-                    return 160;
+                    return 120;
+                default:
+                    return 140;
+            }
+        },
+        buttonSize() {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'lg':
+                    return 120;
                 default:
                     return 140;
             }
