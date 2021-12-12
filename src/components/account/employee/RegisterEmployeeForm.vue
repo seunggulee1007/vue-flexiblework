@@ -35,7 +35,7 @@
                 >
                     <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                            label="일사일"
+                            label="입사일"
                             prepend-icon="mdi-calendar"
                             v-model="employeeForm.hireDate"
                             readonly
