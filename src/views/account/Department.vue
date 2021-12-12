@@ -125,7 +125,7 @@
 
 <script>
 import { getDepartmentList } from '@/api/account';
-import RegisterDepartmentForm from '@/components/account/RegisterDepartmentForm.vue';
+import RegisterDepartmentForm from '@/components/account/department/RegisterDepartmentForm.vue';
 export default {
     created() {
         this.getDepartmentList();

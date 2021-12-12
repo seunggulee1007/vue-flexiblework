@@ -109,7 +109,7 @@ export default {
                                 {
                                     id: 1032,
                                     name: '부서등록',
-                                    path: '/account/register-department',
+                                    path: '/account/department',
 
                                     children: [],
                                 },
@@ -124,7 +124,7 @@ export default {
                                 {
                                     id: 1031,
                                     name: '사원 현황',
-                                    path: '/account/register-employee',
+                                    path: '/account/employee',
                                     children: [],
                                 },
                             ],

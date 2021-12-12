@@ -42,7 +42,12 @@
                                 ></v-icon>
                             </template>
                             <template v-slot:append="{ item }">
-                                <v-btn @click="selectItem(item, $event)" small color="secondary" outlined
+                                <v-btn
+                                    v-if="item.parentId"
+                                    @click="selectItem(item, $event)"
+                                    small
+                                    color="secondary"
+                                    outlined
                                     >선택</v-btn
                                 ></template
                             >

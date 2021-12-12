@@ -40,6 +40,7 @@ import Profile from '@/components/settings/Profile.vue';
 import ChangePwd from '@/components/settings/ChangePwd.vue';
 import { toSvg } from 'jdenticon';
 export default {
+    props: ['employee'],
     computed: {
         ...mapGetters(['ACCOUNT']),
         identicon() {
