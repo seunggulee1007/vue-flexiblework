@@ -104,6 +104,11 @@
                 </v-card-text>
             </v-card>
         </v-col>
+        <v-col cols="12" v-if="flexibleWorkList.length == 0">
+            <v-card class="text-center mt-15" min-height="150" elevation="0">
+                <v-icon class="mb-1">mdi-database-off</v-icon> 조회된 내용이 없습니다.
+            </v-card>
+        </v-col>
     </v-row>
 </template>
 

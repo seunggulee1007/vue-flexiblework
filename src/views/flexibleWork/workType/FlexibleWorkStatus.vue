@@ -48,7 +48,11 @@
                             </v-btn>
                         </template>
                         <v-card v-if="dialog">
-                            <flexible-work-form :flexibleWork="flexibleWork" @close="closeModal"></flexible-work-form>
+                            <flexible-work-form
+                                :flexibleWork="flexibleWork"
+                                @close="closeModal"
+                                @successSave="successSave"
+                            ></flexible-work-form>
                         </v-card>
                     </v-dialog>
                 </v-col>
@@ -77,30 +81,6 @@
                                 v-columns-resizable
                                 :dark="isDark"
                             >
-                                <template v-slot:item.restExist="{ item }">
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            {{ item.restExist ? '있음' : '없음' }}
-                                            <v-btn icon v-bind="attrs" v-on="on" v-if="item.restExist">
-                                                <v-icon color="grey lighten-1"> mdi-information-outline </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>
-                                            <div>
-                                                <table>
-                                                    <tr>
-                                                        <th>No.</th>
-                                                        <th>시간</th>
-                                                    </tr>
-                                                    <tr v-for="(rest, idx) in item.restTimeList" :key="rest.id">
-                                                        <td>{{ idx + 1 }}</td>
-                                                        <td>{{ `${rest.startTime} ~ ${rest.endTime}` }}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </span>
-                                    </v-tooltip>
-                                </template>
                                 <template v-slot:item.mandatoryTimeExist="{ item }">
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
@@ -276,6 +256,8 @@ export default {
                 applyDateFrom: new Date(), // 적용시작일자
                 startTime: '', // 시작시간
                 endTime: '', // 종료시간
+                restTime: '',
+                active: true, //사용여부
                 restExist: false, // 휴식시간 유무
                 mandatoryTimeExist: false, // 의무시간 유무
             },
@@ -288,6 +270,8 @@ export default {
                 applyDateFrom: new Date(), // 적용시작일자
                 startTime: '', // 시작시간
                 endTime: '', // 종료시간
+                restTime: '',
+                active: true, //사용여부
                 restExist: false, // 휴식시간 유무
                 mandatoryTimeExist: false, // 의무시간 유무
             },
@@ -320,6 +304,10 @@ export default {
         editFlexibleWork(item) {
             this.flexibleWork = Object.assign({}, item);
             this.dialog = true;
+        },
+        successSave() {
+            this.closeModal();
+            this.getFlexibleWorkList();
         },
     },
 };

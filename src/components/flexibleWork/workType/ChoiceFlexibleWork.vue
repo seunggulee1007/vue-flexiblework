@@ -117,6 +117,17 @@
                                 </v-card>
                             </v-item>
                         </v-col>
+                        <v-col cols="12" v-if="flexibleWorkList.length == 0">
+                            <v-card class="text-center mt-15" min-height="150" elevation="0">
+                                <v-icon class="mb-1">mdi-database-off</v-icon>
+                                {{ `아직 등록된 유연근무 유형이 없습니다. 유연근무 등록을 먼저 진행해 주세요.` }}
+                            </v-card>
+                            <v-card class="text-center" elevation="0">
+                                <v-btn x-large color="primary" outlined depressed @click="goRegisterFlexibleWork"
+                                    >유연근무 등록하러 가기</v-btn
+                                >
+                            </v-card>
+                        </v-col>
                     </v-row>
                 </v-item-group>
                 <v-divider class="mt-15" />
@@ -167,6 +178,10 @@ export default {
         choiceFlexibleWork() {
             console.log(this.selectedItem);
             this.$emit('selectFlexibleWork', this.flexibleWorkList[this.selectedItem]);
+        },
+        goRegisterFlexibleWork() {
+            this.$router.push('/flexible-work/work-type/flexible-work-status');
+            this.close();
         },
     },
 };

@@ -1,7 +1,7 @@
 <template>
     <main class="modal_main">
         <v-toolbar color="modal" dark flat>
-            <v-toolbar-title class="pl-5"><v-icon large>mdi-map-legend</v-icon>유연근무 유형 선택</v-toolbar-title>
+            <v-toolbar-title class="pl-5"><v-icon large>mdi-map-legend</v-icon>출퇴근 허용지역 선택</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
@@ -55,6 +55,17 @@
                                 </v-card>
                             </v-item>
                         </v-col>
+                        <v-col cols="12" v-if="commuteAreaList.length == 0">
+                            <v-card class="text-center mt-15" min-height="150" elevation="0">
+                                <v-icon class="mb-1">mdi-database-off</v-icon> 아직 등록된 출퇴근 허용지역이 없습니다.
+                                출퇴근 허용지역을 먼저 등록해 주세요.
+                            </v-card>
+                            <v-card class="text-center" elevation="0">
+                                <v-btn x-large color="primary" outlined depressed @click="goRegisterCommuteArea"
+                                    >출퇴근 허용지역 등록하러 가기</v-btn
+                                >
+                            </v-card>
+                        </v-col>
                     </v-row>
                 </v-item-group>
                 <v-divider class="mt-15" />
@@ -106,6 +117,10 @@ export default {
         choiceCommuteArea() {
             console.log(this.selectedItem);
             this.$emit('selectCommuteArea', this.commuteAreaList[this.selectedItem]);
+        },
+        goRegisterCommuteArea() {
+            this.$router.push('/commute/enable/work-area-status');
+            this.close();
         },
     },
 };

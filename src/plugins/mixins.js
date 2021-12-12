@@ -23,6 +23,9 @@ export default {
             this.geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
         },
         setMarker() {
+            if (this.marker) {
+                this.marker.setMap(null);
+            }
             // 결과값으로 받은 위치를 마커로 표시합니다
             this.marker = new kakao.maps.Marker({
                 map: this.kakaoMap,

@@ -47,7 +47,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                             >
-                                출퇴근 허용지역 그룹 등록<v-icon right> mdi-plus-circle-outline </v-icon>
+                                출퇴근 그룹 등록<v-icon right> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>
                         <v-card v-if="dialog">
