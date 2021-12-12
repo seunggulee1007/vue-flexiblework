@@ -80,13 +80,13 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <confirm-dialog
-                    :btnColor="'primary'"
-                    :outlined="true"
-                    :rounded="true"
+                    btnColor="primary"
+                    outlined
+                    rounded
                     btnText="등록"
                     confirmDetailText="등록하시겠습니까?"
                     @success="validate"
-                    :depressed="true"
+                    depressed
                     :disabled="!valid"
                 ></confirm-dialog>
                 <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>

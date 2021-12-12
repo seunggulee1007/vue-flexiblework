@@ -26,12 +26,15 @@
                     </v-sheet>
                     <v-card-text>
                         <v-treeview
+                            v-model="departmentList"
                             :items="items"
                             :search="search"
                             :filter="filter"
+                            :selectable="multi"
                             item-text="departmentName"
                             item-key="departmentId"
                             open-on-click
+                            return-object
                             transition
                             item-children="children"
                         >
@@ -41,7 +44,7 @@
                                     v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
                                 ></v-icon>
                             </template>
-                            <template v-slot:append="{ item }">
+                            <template v-slot:append="{ item }" v-if="!multi">
                                 <v-btn
                                     v-if="item.parentId"
                                     @click="selectItem(item, $event)"
@@ -59,21 +62,47 @@
         <v-divider></v-divider>
         <v-card-actions>
             <v-spacer></v-spacer>
+            <confirm-dialog
+                btnColor="primary"
+                outlined
+                rounded
+                btnText="등록"
+                confirmDetailText="등록하시겠습니까?"
+                @success="saveDepartmentList"
+                depressed
+            ></confirm-dialog>
             <v-btn color="cancel" depressed rounded outlined @click="close"> 닫기 </v-btn>
         </v-card-actions>
     </main>
 </template>
 
 <script>
+import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 import { getDepartmentList } from '@/api/account';
 export default {
     created() {
         this.getDepartmentList();
+        console.log(this.multi);
+    },
+
+    components: {
+        ConfirmDialog,
+    },
+    props: {
+        multi: {
+            type: Boolean,
+            default: false,
+        },
+        searchKind: {
+            type: String,
+            default: '',
+        },
     },
     data() {
         return {
             items: [],
             search: null,
+            departmentList: [],
         };
     },
     computed: {
@@ -95,6 +124,9 @@ export default {
         },
         close() {
             this.$emit('close');
+        },
+        saveDepartmentList() {
+            this.$emit('select', this.departmentList);
         },
     },
 };

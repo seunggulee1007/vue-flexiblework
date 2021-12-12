@@ -5,9 +5,22 @@
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
         <v-card class="px-5 py-15 mt-1 container_card" elevation="0">
-            <v-row>
-                <v-col cols="12" md="2" sm="6">
-                    <v-select label="검색유형" outlined dense class="mt-3"> </v-select>
+            <v-row
+                ><v-col cols="12" md="2" sm="6">
+                    <v-select
+                        label="검색유형"
+                        v-model="searchForm.searchKind"
+                        outlined
+                        dense
+                        class="mt-3"
+                        :items="[
+                            { title: '출퇴근그룹명', code: '1' },
+                            { title: '출퇴근지역명', code: '2' },
+                        ]"
+                        item-text="title"
+                        item-value="code"
+                    >
+                    </v-select>
                 </v-col>
                 <v-col cols="12" sm="7">
                     <v-text-field
@@ -18,8 +31,9 @@
                         required
                         style="width: 60%; display: inline-block"
                         class="mr-3"
-                        @click:append="getCommuteAreaList"
-                        @keyup.enter="getCommuteAreaList"
+                        v-model="searchForm.searchKeyword"
+                        @click:append="getCommuteGroupList"
+                        @keyup.enter="getCommuteGroupList"
                     />
                 </v-col>
                 <v-col cols="12" lg="3" class="text-right">
@@ -33,11 +47,14 @@
                                 v-bind="attrs"
                                 v-on="on"
                             >
-                                출퇴근 허용지역 등록<v-icon right> mdi-plus-circle-outline </v-icon>
+                                출퇴근 허용지역 그룹 등록<v-icon right> mdi-plus-circle-outline </v-icon>
                             </v-btn>
                         </template>
                         <v-card v-if="dialog">
-                            <enable-work-area @close="closeModal" :commuteAreaId="selectedId"></enable-work-area>
+                            <register-work-group-form
+                                @close="closeModal"
+                                :commuteGroupId="selectedId"
+                            ></register-work-group-form>
                         </v-card>
                     </v-dialog>
                 </v-col>
@@ -48,7 +65,7 @@
                     <v-col cols="12">
                         <v-data-table
                             :headers="headers"
-                            :items="commuteAreaList"
+                            :items="commuteGroupList"
                             hide-default-footer
                             class="elevation-1"
                         >
@@ -70,81 +87,57 @@
 </template>
 
 <script>
-import EnableWorkArea from '@/components/flexibleWork/commute/EnableWorkAreaForm.vue';
-import { getCommuteAreaList } from '@/api/commute/commuteArea';
+import RegisterWorkGroupForm from '@/components/flexibleWork/commute/RegisterWorkGroupForm.vue';
+import { getCommuteGroupList } from '@/api/commute/commuteGroup';
 export default {
-    created() {
-        this.getCommuteAreaList();
+    mounted() {
+        this.getCommuteGroupList();
     },
     components: {
-        EnableWorkArea,
+        RegisterWorkGroupForm,
     },
-    data: () => ({
-        dialog: false,
-        dialogDelete: false,
-        headers: [
-            {
-                text: '순번',
-                align: 'center',
-                sortable: false,
-                value: 'commuteAreaId',
+    data() {
+        return {
+            dialog: false,
+            commuteGroupList: [],
+            selectedId: 0,
+            headers: [
+                {
+                    text: '순번',
+                    align: 'center',
+                    sortable: false,
+                    value: 'commuteGroupId',
+                },
+                { text: '그룹명', value: 'groupName' },
+                { text: '허용지역명', value: 'areaName' },
+                { text: 'Actions', value: 'actions', sortable: false },
+            ],
+            searchForm: {
+                searchKind: '',
+                searchKeyword: '',
             },
-            { text: '지점명', value: 'areaName' },
-            { text: '주소', value: 'roadName' },
-            { text: 'Actions', value: 'actions', sortable: false },
-        ],
-        commuteAreaList: [],
-        pageable: {
-            number: 0,
-            size: 10,
-        },
-        selectedId: 0,
-    }),
-
-    computed: {
-        formTitle() {
-            return this.editedIndex === -1 ? '신규 등록' : '출퇴근 지역 수정';
-        },
+            pageable: {
+                number: 0,
+                size: 10,
+            },
+        };
     },
-
-    watch: {
-        dialog(val) {
-            val || this.close();
-        },
-    },
-
     methods: {
-        async getCommuteAreaList() {
-            let res = await getCommuteAreaList();
-            if (res.success) {
-                this.commuteAreaList = res.response.content;
-            }
-        },
-
-        editItem(item) {
-            this.selectedId = item.commuteAreaId;
-            this.dialog = true;
-        },
-
-        close() {
-            this.dialog = false;
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        closeDelete() {
-            this.dialogDelete = false;
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
         closeModal() {
             this.dialog = false;
-            this.selectedId = 0;
+        },
+        async getCommuteGroupList() {
+            const param = {
+                ...this.pageable,
+                ...this.searchForm,
+            };
+            let res = await getCommuteGroupList(param);
+            if (res.success) {
+                this.commuteGroupList = res.response.content;
+            }
+        },
+        editItem(item) {
+            console.log(item);
         },
     },
 };

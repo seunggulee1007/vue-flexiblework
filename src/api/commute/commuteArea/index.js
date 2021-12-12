@@ -1,4 +1,4 @@
-import { doAxiosPost, doAxiosPut, doAxios, doAxiosGet } from '../index';
+import { doAxiosPost, doAxiosPut, doAxios, doAxiosGet } from '../..';
 
 const baseUrl = '/commute/area';
 
@@ -22,4 +22,8 @@ function getCommuteAreaList(param) {
     return doAxios(`${baseUrl}/list`, 'get', param);
 }
 
-export { saveCommuteArea, modifyCommuteArea, getCommuteAreaList, getCommuteArea };
+function getCommuteAreaListByActiveIsTrue() {
+    return doAxiosGet(`${baseUrl}/list/all`);
+}
+
+export { saveCommuteArea, modifyCommuteArea, getCommuteAreaList, getCommuteArea, getCommuteAreaListByActiveIsTrue };

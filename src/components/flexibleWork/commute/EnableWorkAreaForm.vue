@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { saveCommuteArea, modifyCommuteArea, getCommuteArea } from '@/api/commuteArea';
+import { saveCommuteArea, modifyCommuteArea, getCommuteArea } from '@/api/commute/commuteArea';
 import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
 export default {
     async created() {

@@ -182,6 +182,12 @@ export default {
                                     path: '/commute/enable/work-area-status',
                                     children: [],
                                 },
+                                {
+                                    id: 3012,
+                                    name: '춡퇴근그룹등록',
+                                    path: '/commute/enable/work-group-status',
+                                    children: [],
+                                },
                             ],
                         },
 
