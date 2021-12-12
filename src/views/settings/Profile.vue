@@ -1,10 +1,10 @@
 <template>
-    <v-container class="grey lighten-5 mb-6">
+    <v-container class="mb-6">
         <v-toolbar color="secondary" dark flat>
             <v-icon>mdi-card-account-details</v-icon>
             <v-toolbar-title class="pl-5">{{ $route.name }}</v-toolbar-title>
         </v-toolbar>
-        <v-card class="container_card">
+        <v-card class="container_card mt-4">
             <v-row class="justify-content-center d-flex flex-row">
                 <v-col cols="12" md="2" style="top: 0">
                     <v-tabs :vertical="!$vuetify.breakpoint.mobile" v-model="currentItem">

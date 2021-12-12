@@ -10,7 +10,7 @@
                     <v-container>
                         <v-card-title>부서 검색</v-card-title>
                         <v-divider></v-divider>
-                        <v-card class="mx-auto mt-5" max-width="500" min-height="500" max-height="500">
+                        <v-card class="mx-auto mt-5 overflow-auto" max-width="500" min-height="500" max-height="500">
                             <v-sheet class="pa-4 primary lighten-2">
                                 <v-text-field
                                     v-model="search"
@@ -54,11 +54,9 @@
                 </v-col>
                 <v-divider vertical></v-divider>
 
-                <v-col cols="12" md="5" class="d-flex text-center">
+                <v-col cols="12" md="6" class="d-flex text-center">
                     <v-scroll-y-transition mode="out-in">
-                        <v-container v-if="!selected.departmentName">
-                            <div>부서를 선택해 주세요</div>
-                        </v-container>
+                        <v-container v-if="!selected.departmentName"> </v-container>
                         <v-container v-else>
                             <v-card-title>{{ selected.departmentName }}</v-card-title>
                             <v-divider />
@@ -105,6 +103,7 @@
                                             :items="selected.children"
                                             hide-default-footer
                                             class="elevation-1"
+                                            height="212"
                                         >
                                             <template v-slot:item.actions="{ item }">
                                                 <v-icon small class="mr-2" @click="editDepartment(item)">
@@ -112,41 +111,6 @@
                                                 </v-icon>
                                                 <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
                                             </template>
-                                        </v-data-table>
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                                <v-expansion-panel class="mb-10">
-                                    <v-expansion-panel-header>소속 사원</v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        <v-card-actions class="justify-end">
-                                            <v-dialog v-model="empDialog" max-width="800px">
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <v-btn
-                                                        color="secondary"
-                                                        outlined
-                                                        class="mb-2"
-                                                        small
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                    >
-                                                        사원 등록
-                                                    </v-btn>
-                                                </template>
-                                                <v-card v-if="empDialog">
-                                                    <search-employee-form
-                                                        :selected="selected"
-                                                        @close="closeEmpDialog"
-                                                        @success="saveEmployeeDepartment"
-                                                    ></search-employee-form>
-                                                </v-card>
-                                            </v-dialog>
-                                        </v-card-actions>
-                                        <v-data-table
-                                            :headers="empHeaders"
-                                            :items="selected.employeeDtoList"
-                                            hide-default-footer
-                                            class="elevation-1"
-                                        >
                                         </v-data-table>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
@@ -162,14 +126,12 @@
 <script>
 import { getDepartmentList } from '@/api/account';
 import RegisterDepartmentForm from '@/components/account/RegisterDepartmentForm.vue';
-import SearchEmployeeForm from '@/components/account/SearchEmployeeForm.vue';
 export default {
     created() {
         this.getDepartmentList();
     },
     components: {
         RegisterDepartmentForm,
-        SearchEmployeeForm,
     },
     data: () => ({
         items: [],
@@ -284,6 +246,10 @@ export default {
         saveEmployeeDepartment(items) {
             this.selected.employeeDtoList = items;
             this.closeEmpDialog();
+        },
+        success() {
+            this.getDepartmentList();
+            this.close();
         },
         // 부서 수정 모달
         editDepartment(item) {
