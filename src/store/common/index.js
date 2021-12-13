@@ -12,7 +12,6 @@ export default {
         snackbarMessage: '',
         snackbarTimeout: 3000,
         snackbarColor: 'light-blue accent-2',
-        dark: false,
     }),
     getters,
     mutations,

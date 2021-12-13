@@ -11,7 +11,6 @@ let Auth = {
         userName: '',
         accountId: 0,
         account: {},
-        superAdmin: false,
     }),
     getters,
     mutations,

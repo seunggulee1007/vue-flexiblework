@@ -17,11 +17,11 @@
                         :rules="confirmPasswordRules"
                         label="새 패스워드 확인"
                     ></v-text-field>
-                    <div class="text-center">
-                        <v-btn color="primary" :disabled="!valid" @click="validate">패스워드 변경하기</v-btn>
-                    </div>
+                    <v-btn color="primary" :disabled="!valid" @click="validate">패스워드 변경하기</v-btn>
                 </v-form>
             </v-container>
+            <v-alert type="success" v-model="alert" dense outlined dismissible>{{ message }}</v-alert>
+            <v-btn v-if="!alert" color="deep-purple accent-4" dark @click="alert = true"> Reset </v-btn>
         </v-card>
     </v-container>
 </template>

@@ -52,6 +52,9 @@
                                 prepend-icon="mdi-lock-outline"
                                 @keyup.enter="validate"
                             />
+                            <v-alert class="mt-10" type="error" v-model="result" text dense outlined dismissible>{{
+                                resultMsg
+                            }}</v-alert>
                             <v-btn
                                 :disabled="!valid"
                                 block
@@ -64,12 +67,6 @@
                             >
                         </v-form>
                     </v-card-text>
-                    <v-alert class="mt-10" type="error" v-model="result" text dense outlined dismissible>{{
-                        resultMsg
-                    }}</v-alert>
-                    <v-alert class="mt-10" type="success" v-model="successResult" text dense outlined dismissible>{{
-                        resultMsg
-                    }}</v-alert>
                 </v-card>
             </v-col>
         </v-row>
@@ -104,7 +101,6 @@ export default {
             ],
             result: false,
             resultMsg: '',
-            successResult: false,
             positions: [],
         };
     },
@@ -113,12 +109,10 @@ export default {
             if (this.$refs.form.validate()) {
                 let res = await signUp(this.signUpForm);
                 this.result = !res.success;
-                this.resultMsg = res.message;
-                if (res.success) {
-                    this.successResult = true;
-                    setTimeout(() => {
-                        this.$router.push('/');
-                    }, 2000);
+                if (!res.success) {
+                    this.resultMsg = res.message;
+                } else {
+                    this.$router.push('/');
                 }
             }
         },
