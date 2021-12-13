@@ -12,6 +12,7 @@
                                 :rules="emailRules"
                                 v-model="email"
                                 clearable
+                                ref="email"
                                 prepend-icon="mdi-email"
                                 @keyup.enter="validate"
                             ></v-text-field>
@@ -34,11 +35,6 @@
                                 @click="validate"
                                 >로그인</v-btn
                             >
-                            <div class="text-right">
-                                <v-btn text class="mt-2">
-                                    <router-link to="/authentication/sign-up"> 회원가입 </router-link>
-                                </v-btn>
-                            </div>
                         </v-form>
                         <v-alert class="mt-10" type="error" v-model="result" text dense outlined dismissible>{{
                             resultMsg
@@ -53,6 +49,9 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
+    mounted() {
+        this.$refs.email.focus();
+    },
     name: 'signIn',
     data() {
         return {

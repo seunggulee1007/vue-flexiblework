@@ -4,6 +4,7 @@
             class="grey darken-3 accent-4"
             :mini-variant.sync="navis"
             :permanent="!navis"
+            :temporary="isMobile && !navis"
             m
             dark
             app
@@ -35,7 +36,7 @@
 
             <default-list :items="menus" />
             <template v-slot:append>
-                <div class="pa-2" v-if="!navis">
+                <div class="pa-3 mr-4" v-if="!navis">
                     <confirm-dialog
                         :btnColor="'error'"
                         :outlined="true"
@@ -58,18 +59,26 @@ import { mapGetters, mapMutations } from 'vuex';
 import { toSvg } from 'jdenticon';
 export default {
     watch: {
-        naviFlag(value) {
+        isNaviFlag(value) {
+            console.log(value);
             this.navis = value;
         },
         navis(value) {
-            this.$emit('updateNaviFlag', value);
+            this.toggleNaviFlag(value);
         },
     },
-    props: ['naviFlag'],
     computed: {
-        ...mapGetters(['ACCOUNT']),
+        ...mapGetters(['ACCOUNT', 'isNaviFlag']),
         identicon() {
             return toSvg(this.ACCOUNT.userName, 255);
+        },
+        isMobile() {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs':
+                    return true;
+                default:
+                    return false;
+            }
         },
     },
     components: {
@@ -100,7 +109,7 @@ export default {
                                 {
                                     id: 1032,
                                     name: '부서등록',
-                                    path: '/account/register-department',
+                                    path: '/account/department',
 
                                     children: [],
                                 },
@@ -115,7 +124,7 @@ export default {
                                 {
                                     id: 1031,
                                     name: '사원 현황',
-                                    path: '',
+                                    path: '/account/employee',
                                     children: [],
                                 },
                             ],
@@ -136,33 +145,20 @@ export default {
                                 {
                                     id: 2011,
                                     name: '유연근무유형현황',
-                                    path: '/flexible-work/flexible-work-status',
+                                    path: '/flexible-work/work-type/flexible-work-status',
                                     children: [],
                                 },
                             ],
                         },
                         {
-                            id: 202,
-                            name: '유연근무대상관리',
+                            id: 201,
+                            name: '근무계획관리',
                             path: '',
                             children: [
                                 {
-                                    id: 2021,
-                                    name: '유연근무대상현황',
-                                    path: '',
-                                    children: [],
-                                },
-                            ],
-                        },
-                        {
-                            id: 203,
-                            name: '출퇴근허용지역관리',
-                            path: '',
-                            children: [
-                                {
-                                    id: 2031,
-                                    name: '출퇴근허용지역현황',
-                                    path: '/settings/enable-work-area',
+                                    id: 2011,
+                                    name: '근무계획현황',
+                                    path: '/flexible-work/plan/flexible-work-plan',
                                     children: [],
                                 },
                             ],
@@ -177,17 +173,24 @@ export default {
                     children: [
                         {
                             id: 301,
-                            name: '근무계획관리',
+                            name: '출퇴근허용지역관리',
                             path: '',
                             children: [
                                 {
                                     id: 3011,
-                                    name: '근무계획현황',
-                                    path: '',
+                                    name: '출퇴근허용지역현황',
+                                    path: '/commute/enable/work-area-status',
+                                    children: [],
+                                },
+                                {
+                                    id: 3012,
+                                    name: '춡퇴근그룹등록',
+                                    path: '/commute/enable/work-group-status',
                                     children: [],
                                 },
                             ],
                         },
+
                         {
                             id: 302,
                             name: '출/퇴근등록',
@@ -207,9 +210,9 @@ export default {
         };
     },
     methods: {
-        ...mapMutations(['clearLoginInfo']),
+        ...mapMutations(['clearLoginInfo', 'toggleNaviFlag']),
         updateNaviFlag() {
-            this.navis = !this.navis;
+            this.toggleNaviFlag(true);
         },
         async logout() {
             this.clearLoginInfo();

@@ -7,60 +7,14 @@
                 :rounded="rounded"
                 :block="block"
                 :depressed="depressed"
-                dark
+                :disabled="disabled"
                 v-bind="attrs"
                 v-on="on"
-                v-if="btnSize == 'x-small'"
-                class="mr-3"
-                x-small
-            >
-                {{ btnText }}
-            </v-btn>
-            <v-btn
-                :color="btnColor"
-                :outlined="outlined"
-                :rounded="rounded"
-                :block="block"
-                :depressed="depressed"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                v-if="btnSize == 'small'"
-                class="mr-3"
-                small
-            >
-                {{ btnText }}
-            </v-btn>
-            <v-btn :color="btnColor" :outlined="outlined" dark v-bind="attrs" v-on="on" v-if="btnSize == ''">
-                {{ btnText }}
-            </v-btn>
-            <v-btn
-                :color="btnColor"
-                :outlined="outlined"
-                :rounded="rounded"
-                :block="block"
-                :depressed="depressed"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                v-if="btnSize == 'large'"
-                class="mr-3"
-                large
-            >
-                {{ btnText }}
-            </v-btn>
-            <v-btn
-                :color="btnColor"
-                :outlined="outlined"
-                :rounded="rounded"
-                :block="block"
-                :depressed="depressed"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                v-if="btnSize == 'x-large'"
-                class="mr-3"
-                x-large
+                :x-small="btnSize == 'x-small'"
+                :small="btnSize == 'small'"
+                :large="btnSize == 'large'"
+                :x-large="btnSize == 'x-large'"
+                class="mx-1"
             >
                 {{ btnText }}
             </v-btn>
@@ -120,7 +74,7 @@ export default {
         },
         btnSize: {
             type: String,
-            default: 'large',
+            default: '',
         },
         btnColor: {
             type: String,
@@ -145,6 +99,10 @@ export default {
         cancelText: {
             type: String,
             default: '아니오',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
     data() {

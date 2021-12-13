@@ -1,7 +1,11 @@
-import { doAxiosGet } from '../index';
+import { doAxiosGet, doAxios } from '../index';
 
 function getPositions() {
     return doAxiosGet('/employee/positions');
 }
 
-export { getPositions };
+function getEmployeeList(param) {
+    return doAxios(`/employee/searchform`, 'get', param);
+}
+
+export { getPositions, getEmployeeList };

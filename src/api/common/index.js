@@ -17,7 +17,9 @@ function setInterceptors(instance) {
     // Add a request interceptor
     instance.interceptors.request.use(
         function (config) {
-            store.commit('startSnackbar');
+            if (config.method !== 'get') {
+                store.commit('startSnackbar');
+            }
             // Do something before request is sent
             // test comment
             config.headers['X-SEPARTNERS-AUTH'] = `Bearer ${store.getters.getAccessToken}`;
@@ -53,10 +55,12 @@ function setInterceptors(instance) {
                     response: { status },
                     response: { data },
                 } = error;
-                console.log('401떴으면 여기 와야 하는 거 아니냐? ㅋㅋ');
+                if (config.method == 'get') {
+                    store.commit('startSnackbar');
+                }
                 if (status === 401) {
                     const originalRequest = config;
-                    console.log('이것도 좀 확인하고', data.status);
+
                     if (data && data.status == -401) {
                         store.commit('clearLoginInfo');
                         store._vm.$cookie.delete(process.env.VUE_APP_AUTH_TOKEN);
@@ -72,9 +76,8 @@ function setInterceptors(instance) {
                             resolve(instance(originalRequest));
                         });
                     });
-                    console.log('토큰 재발급 되는 동안 저장을 할 거고....');
+
                     if (!isTokenRefreshing) {
-                        console.log('토큰 재발행 하나?');
                         isTokenRefreshing = true;
                         const refreshToken = store.getters.getRefreshToken;
 
