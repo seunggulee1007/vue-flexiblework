@@ -11,13 +11,11 @@ function createInstance() {
 const instance = createInstance();
 
 function doAxiosPost(url, param) {
-    store.commit('setProcessMsg', '처리중입니다.');
     store.commit('processStart');
     return instance.post(url, param).catch(errFunction);
 }
 
 function doAxiosPut(url, param) {
-    store.commit('setProcessMsg', '처리중입니다.');
     store.commit('processStart');
     return instance.put(url, param).catch(errFunction);
 }
@@ -29,7 +27,6 @@ function doAxiosGet(url, param) {
 }
 
 function doAxiosDelete(url, param) {
-    store.commit('setProcessMsg', '처리중입니다.');
     store.commit('toggleProcess');
     return instance.delete(url, { data: param }).catch(errFunction);
 }
@@ -40,7 +37,7 @@ function doAxios(url, method, params, config) {
         method,
         params,
         config,
-    }).catch(errFunction);
+    });
 }
 
 function errFunction(error) {
@@ -57,7 +54,7 @@ function errFunction(error) {
     }
     if (res.message && res.status != 401) {
         store.commit('setSanckbarMessage', res.message);
-        store.commit('setSnackbarTimeout', 5000);
+        store.commit('setSnackbarTimeout', 50000);
         store.commit('setSnackbarColor', 'orange lighten-1');
         store.commit('endSnackbar');
     }

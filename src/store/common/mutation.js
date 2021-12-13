@@ -5,8 +5,8 @@ export default {
     toggleDeptDialogFlag(state) {
         state.deptDialog = !state.deptDialog;
     },
-    toggleNaviFlag(state, value) {
-        state.naviFlag = value;
+    toggleNaviFlag(state) {
+        state.naviFlag = !state.naviFlag;
     },
     processStart(state) {
         state.process = true;
@@ -31,8 +31,5 @@ export default {
     },
     setSnackbarColor(state, color) {
         state.snackbarColor = color;
-    },
-    toggleDark(state) {
-        state.dark = !state.dark;
     },
 };

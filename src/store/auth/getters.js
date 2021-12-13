@@ -17,7 +17,4 @@ export default {
     ACCOUNT(state) {
         return state.account;
     },
-    isSuperAdmin(state) {
-        return state.superAdmin;
-    },
 };

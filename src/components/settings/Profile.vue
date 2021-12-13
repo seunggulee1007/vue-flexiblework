@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <section>
+        <v-card>
             <v-alert type="success" v-if="successFlag && resultMsg" dense outlined dismissible>{{ resultMsg }}</v-alert>
             <v-alert type="error" v-else-if="!successFlag && resultMsg" dense outlined dismissible>{{
                 resultMsg
@@ -9,7 +9,7 @@
                 <v-row>
                     <v-col cols="12">
                         <v-container>
-                            <v-card align="center" :class="cardSize" elevation="0">
+                            <v-card align="center" :class="cardSize">
                                 <v-card v-if="imgSrc != ''">
                                     <vue-cropper
                                         ref="cropper"
@@ -40,7 +40,7 @@
                                         <v-img v-html="identicon"></v-img>
                                     </v-card-text>
                                 </v-card>
-                                <v-card class="pa-3 my-5">
+                                <v-card class="mt-10">
                                     <v-file-input
                                         :rules="rules"
                                         accept="image/png, image/jpeg, image/bmp"
@@ -51,7 +51,7 @@
                                         @change="setImage"
                                     ></v-file-input>
                                 </v-card>
-                                <v-card class="mt-5 pb-5 elevation-0" v-if="imgSrc != ''" width="600">
+                                <v-card class="mt-5" v-if="imgSrc != ''" width="600">
                                     <v-dialog v-model="dialog" max-width="700px" persistent>
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn color="error" v-bind="attrs" block v-on="on" @click="cropImage">
@@ -88,7 +88,7 @@
                     :depressed="true"
                 ></confirm-dialog>
             </v-card-actions>
-        </section>
+        </v-card>
     </v-container>
 </template>
 
@@ -180,9 +180,8 @@ export default {
                 profileImage: this.changeProfileImage,
             };
             let res = await this.CHANGE_PROFILE_IMAGE(param);
-            console.log(res);
-            // this.successFlag = res.success;
-            // this.resultMsg = res.message;
+            this.successFlag = res.success;
+            this.resultMsg = res.message;
         },
     },
 };

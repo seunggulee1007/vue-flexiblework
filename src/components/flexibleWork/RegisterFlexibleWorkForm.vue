@@ -1,14 +1,13 @@
 <template>
-    <main class="modal_container">
-        <v-toolbar color="modal" dark flat>
+    <div>
+        <v-toolbar color="purple darken-2" dark flat>
             <v-toolbar-title class="pl-5">유연근무 유형 등록</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click="close">
                 <v-icon>mdi-close-box-outline</v-icon>
             </v-btn>
         </v-toolbar>
-        <v-divider />
-        <section class="modal_section">
+        <v-container>
             <v-card :loading="loading">
                 <v-form ref="flexibleForm" v-model="valid" lazy-validation class="pa-10">
                     <v-row justify="space-between">
@@ -45,7 +44,7 @@
                     </v-row>
                     <v-divider class="pb-3 mt-10" />
                     <v-row justify="space-between">
-                        <v-col cols="12" md="4">
+                        <v-col cols="12">
                             <v-select
                                 label="1일 근로시간"
                                 :items="dailyWorkTimeList"
@@ -54,7 +53,7 @@
                                 v-model="flexibleWork.dailyWorkTime"
                             />
                         </v-col>
-                        <v-col cols="12" md="4">
+                        <v-col cols="12">
                             <v-select
                                 label="정산단위기간"
                                 :items="settlementUnitPeriodList"
@@ -62,15 +61,6 @@
                                 item-value="code"
                                 v-model="flexibleWork.settlementUnitPeriod"
                             />
-                        </v-col>
-                        <v-col cols="12" md="4">
-                            <v-select
-                                label="휴게시간"
-                                :items="restTimeList"
-                                item-text="title"
-                                item-value="code"
-                                v-model="flexibleWork.restTime"
-                            ></v-select>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -137,18 +127,117 @@
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-switch
-                                v-model="flexibleWork.mandatoryTimeExist"
-                                label="의무시간 유무"
+                                v-model="flexibleWork.restExist"
+                                label="휴게시간 유무"
+                                color="red"
                                 hide-details
                             ></v-switch>
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-switch v-model="flexibleWork.active" label="사용여부"> </v-switch>
+                            <v-switch
+                                v-model="flexibleWork.mandatoryTimeExist"
+                                label="의무시간 유무"
+                                color="red"
+                                hide-details
+                            ></v-switch>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="12">
                             <v-expansion-panels v-model="panel" focusable multiple>
+                                <v-expansion-panel v-if="flexibleWork.restExist">
+                                    <v-expansion-panel-header>휴게시간</v-expansion-panel-header>
+                                    <v-divider />
+                                    <v-expansion-panel-content>
+                                        <v-data-table
+                                            :headers="headers"
+                                            :items="restTimeList"
+                                            hide-default-footer
+                                            class="elevation-1"
+                                        >
+                                            <template v-slot:top>
+                                                <div class="text-right my-3">
+                                                    <v-btn color="info" @click="addRestTimeList">
+                                                        <v-icon left dark> mdi-plus-circle-outline </v-icon>추가
+                                                    </v-btn>
+                                                </div>
+                                            </template>
+                                            <template v-slot:item.startTime="{ item }">
+                                                <v-menu
+                                                    :ref="`restStart${item.id}`"
+                                                    v-model="item.menu"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    :return-value.sync="item.startTime"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    max-width="290px"
+                                                    min-width="290px"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="item.startTime"
+                                                            label="시작"
+                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                            :rules="[v => !!v || '시작시간을 선택해 주세요.']"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-time-picker
+                                                        locale="ko"
+                                                        v-if="item.menu"
+                                                        v-model="item.startTime"
+                                                        full-width
+                                                        @click:minute="
+                                                            $refs[`restStart${item.id}`].save(item.startTime)
+                                                        "
+                                                    ></v-time-picker>
+                                                </v-menu>
+                                            </template>
+                                            <v-divider></v-divider>
+                                            <template v-slot:item.endTime="{ item }">
+                                                <v-menu
+                                                    :ref="`restEnd${item.id}`"
+                                                    v-model="item.menu2"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    :return-value.sync="item.endTime"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    max-width="290px"
+                                                    min-width="290px"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="item.endTime"
+                                                            label="종료"
+                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                            readonly
+                                                            :rules="[v => !!v || '종료시간을 선택해 주세요.']"
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-time-picker
+                                                        locale="ko"
+                                                        v-if="item.menu2"
+                                                        v-model="item.endTime"
+                                                        full-width
+                                                        @click:minute="$refs[`restEnd${item.id}`].save(item.endTime)"
+                                                    ></v-time-picker>
+                                                </v-menu>
+                                            </template>
+                                            <template v-slot:item.actions="{ item }">
+                                                <v-icon small @click="deleteItem(item)" v-if="item.id > 0">
+                                                    mdi-delete
+                                                </v-icon>
+                                            </template>
+                                        </v-data-table>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+
                                 <v-expansion-panel v-if="flexibleWork.mandatoryTimeExist">
                                     <v-expansion-panel-header>의무시간</v-expansion-panel-header>
                                     <v-divider />
@@ -235,7 +324,7 @@
                                                 </v-menu>
                                             </template>
                                             <template v-slot:item.actions="{ item }">
-                                                <v-icon small @click="deleteMandatoryItem(item)" v-if="item.id > 1">
+                                                <v-icon small @click="deleteMandatoryItem(item)" v-if="item.id > 0">
                                                     mdi-delete
                                                 </v-icon>
                                             </template>
@@ -249,37 +338,35 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <confirm-dialog
-                        :btnColor="'primary'"
-                        :outlined="true"
-                        :rounded="true"
-                        btnText="등록"
-                        confirmDetailText="등록하시겠습니까?"
-                        @success="saveFlexibleWork"
-                        :depressed="true"
-                        :disabled="!valid"
-                    ></confirm-dialog>
-                    <v-btn color="cancel" depressed rounded outlined @click="close"> 취소 </v-btn>
+                    <v-btn color="blue darken-1" text @click="close"> 취소 </v-btn>
+                    <v-btn color="blue darken-1" text @click="saveFlexibleWork" :disabled="!valid"> 등록 </v-btn>
                 </v-card-actions>
             </v-card>
-        </section>
-    </main>
+        </v-container>
+    </div>
 </template>
 
 <script>
-import ConfirmDialog from '@/components/btns/ConfirmDialog.vue';
-import { getCodeList, saveFlexibleWork } from '@/api/flexibleWork/workType';
+import { getCodeList, saveFlexibleWork } from '@/api/flexibleWork';
 export default {
-    props: ['flexibleWork'],
     mounted() {
         this.getCodeList();
-    },
-    components: {
-        ConfirmDialog,
     },
     data() {
         return {
             loading: false,
+            flexibleWork: {
+                flexibleWorkType: '', // 유연근무 제도
+                flexibleWorkName: '', //유연근무명칭
+                workDayOfWeekSet: [], //근무요일
+                dailyWorkTime: '', // 1일 근로시간
+                settlementUnitPeriod: '', // 정산단위기간
+                applyDateFrom: new Date(), // 적용시작일자
+                startTime: '', // 시작시간
+                endTime: '', // 종료시간
+                restExist: false, // 휴식시간 유무
+                mandatoryTimeExist: false, // 의무시간 유무
+            },
             valid: false,
             menu: false,
             menu2: false,
@@ -287,8 +374,8 @@ export default {
             flexibleWorkTypeList: [],
             dailyWorkTimeList: [],
             settlementUnitPeriodList: [],
-            restTimeList: [],
-            mandatoryTimeList: [{ id: 1, startTime: '', endTime: '', menu: false, menu2: false }],
+            restTimeList: [{ id: 0, startTime: '', endTime: '', menu: false, menu2: false }],
+            mandatoryTimeList: [{ id: 0, startTime: '', endTime: '', menu: false, menu2: false }],
             headers: [
                 {
                     text: '번호',
@@ -334,7 +421,6 @@ export default {
                 this.flexibleWorkTypeList = res.response.flexibleWorkTypeList;
                 this.dailyWorkTimeList = res.response.dailyWorkTimeList;
                 this.settlementUnitPeriodList = res.response.settlementUnitPeriodList;
-                this.restTimeList = res.response.restTimeList;
                 this.setDefaultValue();
             }
         },
@@ -354,14 +440,10 @@ export default {
                     this.flexibleWork.settlementUnitPeriod = data.code;
                 }
             });
-            this.restTimeList.filter(data => {
-                if (data.default) {
-                    this.flexibleWork.restTime = data.code;
-                }
-            });
         },
         async saveFlexibleWork() {
             if (this.$refs.flexibleForm.validate()) {
+                this.loading = true;
                 if (this.flexibleWork.restExist) {
                     this.flexibleWork.restTimeList = this.restTimeList;
                 }
@@ -370,13 +452,14 @@ export default {
                 }
                 let res = await saveFlexibleWork(this.flexibleWork);
                 if (res.success) {
-                    this.$emit('successSave');
+                    this.close();
                 }
+                this.loading = false;
             }
         },
         addRestTimeList() {
             this.restTimeList.push({
-                id: this.restTimeList.length + 1,
+                id: this.restTimeList.length,
                 startTime: '',
                 endTime: '',
                 menu: false,
@@ -385,7 +468,7 @@ export default {
         },
         addMandatoryTimeList() {
             this.mandatoryTimeList.push({
-                id: this.mandatoryTimeList.length + 1,
+                id: this.mandatoryTimeList.length,
                 startTime: '',
                 endTime: '',
                 menu: false,
@@ -398,11 +481,8 @@ export default {
         saveStartTime(item) {
             this.$refs[`restStart${item.id}`].save(item.startTime);
         },
-        deleteRestItem(item) {
-            let idx = this.restTimeList.indexOf(item);
-            if (idx != -1) {
-                this.restTimeList.splice(idx, 1);
-            }
+        deleteItem(item) {
+            console.log(item);
         },
         deleteMandatoryItem(item) {
             let idx = this.mandatoryTimeList.indexOf(item);

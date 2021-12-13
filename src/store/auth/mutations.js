@@ -11,7 +11,6 @@ export default {
         state.refreshToken = data.refreshToken;
         state.userName = data.userName;
         state.account = data;
-        state.superAdmin = data.superAdmin;
     },
     /**
      * 로그 아웃 이후 state에 내용 빈값으로 초기화
@@ -26,7 +25,6 @@ export default {
         state.accountId = '';
         state.refreshToken = '';
         state.userName = '';
-        state.superAdmin = false;
     },
     setAccessToken(state, token) {
         state.accessToken = token;

@@ -1,13 +1,8 @@
-import { doAxios, doAxiosGet, doAxiosPost } from '../..';
+import { doAxios, doAxiosGet, doAxiosPost } from '..';
 
 function getFlexibleWorkList(param) {
     return doAxios('/flexible-work/list', 'get', param);
 }
-
-function getFlexibleWorkListActiveIsTrue() {
-    return doAxiosGet('/flexible-work/list/all');
-}
-
 function getCodeList() {
     return doAxiosGet('/flexible-work/codes');
 }
@@ -15,4 +10,4 @@ function getCodeList() {
 function saveFlexibleWork(param) {
     return doAxiosPost('/flexible-work', param);
 }
-export { getCodeList, saveFlexibleWork, getFlexibleWorkList, getFlexibleWorkListActiveIsTrue };
+export { getCodeList, saveFlexibleWork, getFlexibleWorkList };
